@@ -43,7 +43,51 @@ button {
   background: #293f50;
 }
 
-/* 풍경 */
+/* ─────────────────────────
+   하늘과 바다 명암 그라데이션
+───────────────────────── */
+
+.world::before,
+.world::after {
+  content: "";
+  position: absolute;
+  left: 0;
+  right: 0;
+  pointer-events: none;
+  z-index: 5;
+}
+
+/* 상단 : 은은하게 밝아지는 하늘 */
+
+.world::before {
+  top: 0;
+  height: 42%;
+
+  background: linear-gradient(
+    to bottom,
+    rgba(218,228,231,.17) 0%,
+    rgba(194,209,218,.08) 45%,
+    transparent 100%
+  );
+}
+
+/* 하단 : 깊어질수록 어두워지는 바다 */
+
+.world::after {
+  bottom: 0;
+  height: 48%;
+
+  background: linear-gradient(
+    to bottom,
+    transparent 0%,
+    rgba(5,19,33,.15) 42%,
+    rgba(3,12,25,.48) 100%
+  );
+}
+
+/* ─────────────────────────
+   전체 풍경
+───────────────────────── */
 
 .landscape {
   position: absolute;
@@ -54,7 +98,9 @@ button {
   pointer-events: none;
 }
 
-/* 해와 달 클릭 영역 */
+/* ─────────────────────────
+   해와 달 클릭 영역
+───────────────────────── */
 
 .celestial {
   position: absolute;
@@ -104,7 +150,9 @@ button {
   height: var(--moon-size);
 }
 
-/* 해적선 클릭 영역 */
+/* ─────────────────────────
+   해적선 클릭 영역
+───────────────────────── */
 
 .ship-click {
   position: absolute;
@@ -113,6 +161,7 @@ button {
   top: var(--ship-top);
   width: var(--ship-width);
   height: var(--ship-height);
+
   transform: rotate(var(--ship-angle));
   transform-origin: 50% 100%;
 
@@ -132,7 +181,9 @@ button {
   outline-offset: 4px;
 }
 
-/* 제목 */
+/* ─────────────────────────
+   제목
+───────────────────────── */
 
 .scene-title {
   position: absolute;
@@ -154,7 +205,9 @@ button {
   text-shadow: 0 2px 15px rgba(18,37,54,.7);
 }
 
-/* 풍경 애니메이션 */
+/* ─────────────────────────
+   풍경 애니메이션
+───────────────────────── */
 
 .cloud-float-a {
   animation: driftA 45s ease-in-out infinite alternate;
@@ -203,7 +256,9 @@ button {
   to { transform: rotate(.5deg); }
 }
 
-/* 설명창 공통 */
+/* ─────────────────────────
+   설명창 공통
+───────────────────────── */
 
 .modal {
   position: fixed;
@@ -308,7 +363,9 @@ button {
     );
 }
 
-/* 설명창 상단 */
+/* ─────────────────────────
+   설명창 상단
+───────────────────────── */
 
 .profile-header {
   position: relative;
@@ -321,24 +378,26 @@ button {
   border-bottom: 1px solid rgba(213,224,224,.16);
 }
 
+/* 상단 제목 : 기존보다 살짝 어둡게 */
+
 .profile-heading {
   margin: 0;
   font-size: 13px;
   font-weight: 400;
   letter-spacing: .18em;
-  color: #e4ebee;
+  color: #a8b7c1;
 }
 
 .sun-profile .profile-heading {
-  color: #e8d9bc;
+  color: #b7aa98;
 }
 
 .moon-profile .profile-heading {
-  color: #cce6f5;
+  color: #96b4c5;
 }
 
 .ship-profile .profile-heading {
-  color: #d9e3e9;
+  color: #9daeba;
 }
 
 .close-profile {
@@ -351,7 +410,9 @@ button {
   cursor: pointer;
 }
 
-/* 설명창 본문 */
+/* ─────────────────────────
+   설명창 본문
+───────────────────────── */
 
 .profile-body {
   position: relative;
@@ -373,7 +434,7 @@ button {
   color: #f3f5f4;
 }
 
-/* 설명 문구 : 이전보다 밝게 */
+/* 밝고 읽기 쉬운 설명 글씨 */
 
 .profile-description {
   position: relative;
@@ -468,10 +529,16 @@ button {
   transform: rotate(45deg);
 }
 
-/* 해적선 정보 구역 */
+/* ─────────────────────────
+   해적선 정보
+───────────────────────── */
 
 .ship-info {
   margin-top: 29px;
+}
+
+.ship-info[hidden] {
+  display: none;
 }
 
 .ship-section {
@@ -523,7 +590,9 @@ button {
   line-height: 1.9;
 }
 
-/* 모바일 */
+/* ─────────────────────────
+   모바일
+───────────────────────── */
 
 @media (max-width: 600px) {
   .scene-title {
@@ -651,7 +720,9 @@ button {
 
 </defs>
 
-<!-- 하늘 -->
+<!-- ─────────────────────────
+     하늘
+───────────────────────── -->
 
 <rect
   width="100%"
@@ -742,7 +813,9 @@ button {
 
 </g>
 
-<!-- 태양 -->
+<!-- ─────────────────────────
+     태양
+───────────────────────── -->
 
 <g id="sunArtwork">
 
@@ -785,7 +858,9 @@ button {
   />
 </g>
 
-<!-- 바다 -->
+<!-- ─────────────────────────
+     바다
+───────────────────────── -->
 
 <g clip-path="url(#seaClip)">
 
@@ -795,6 +870,8 @@ button {
     fill="url(#sea)"
   />
 
+  <!-- 달빛 -->
+
   <circle
     id="moonAura"
     class="moon-glow"
@@ -803,6 +880,8 @@ button {
     r="200"
     fill="url(#moonHalo)"
   />
+
+  <!-- 점박이 없는 보름달 -->
 
   <circle
     id="moonDiscShape"
@@ -814,7 +893,9 @@ button {
 
 </g>
 
-<!-- 해적선 -->
+<!-- ─────────────────────────
+     해적선
+───────────────────────── -->
 
 <g id="shipPosition" transform="translate(280 259)">
 
@@ -888,8 +969,6 @@ button {
     stroke-opacity=".4"
     stroke-width="2"
   />
-
-  <!-- 작은 점 장식 제거 -->
 
   <!-- 돛대 -->
 
@@ -1125,7 +1204,9 @@ button {
   aria-label="해적선 정보와 페르소나 고정 정보 보기"
 ></button>
 
-<!-- 설명창 -->
+<!-- ─────────────────────────
+     설명창
+───────────────────────── -->
 
 <div
   class="modal"
@@ -1263,7 +1344,9 @@ button {
 
   let lastFocus = null;
 
-  /* 화면 크기에 따른 풍경 배치 */
+  /* ─────────────────────────
+     화면 크기에 따른 풍경 배치
+  ───────────────────────── */
 
   function layout() {
 
@@ -1275,7 +1358,7 @@ button {
       `0 0 ${w} ${h}`
     );
 
-    /* 하늘과 바다 */
+    /* 하늘과 바다 경계 */
 
     const y1 = h * .205;
     const y2 = h * .795;
@@ -1377,7 +1460,7 @@ button {
       `${moonR * 2}px`
     );
 
-    /* 해적선 */
+    /* 해적선 위치 */
 
     const sx = w * .29;
     const sy = y1 + dy * .29;
@@ -1405,7 +1488,7 @@ button {
       `scale(${scale})`
     );
 
-    /* 해적선 클릭 영역도 같은 위치에 배치 */
+    /* 해적선 클릭 영역 */
 
     const shipWidth = 240 * scale;
     const shipHeight = 195 * scale;
@@ -1437,7 +1520,9 @@ button {
 
   }
 
-  /* 구름 비율 */
+  /* ─────────────────────────
+     구름 비율
+  ───────────────────────── */
 
   const clouds = [
     ...scene.querySelectorAll(
@@ -1473,7 +1558,9 @@ button {
 
   refresh();
 
-  /* 캐릭터 정보 */
+  /* ─────────────────────────
+     캐릭터 정보
+  ───────────────────────── */
 
   const characters = {
 
@@ -1497,7 +1584,9 @@ button {
 
   };
 
-  /* 설명창 열기 */
+  /* ─────────────────────────
+     설명창 열기
+  ───────────────────────── */
 
   function openProfile(type) {
 
@@ -1541,7 +1630,9 @@ button {
 
   }
 
-  /* 설명창 닫기 */
+  /* ─────────────────────────
+     설명창 닫기
+  ───────────────────────── */
 
   function closeProfile() {
 
@@ -1558,7 +1649,9 @@ button {
 
   }
 
-  /* 클릭 이벤트 */
+  /* ─────────────────────────
+     클릭 이벤트
+  ───────────────────────── */
 
   sunButton.addEventListener("click", () => {
     openProfile("sun");
