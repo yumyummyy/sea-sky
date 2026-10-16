@@ -1,1222 +1,173 @@
-
 <!DOCTYPE html>
 <html lang="ko">
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<meta name="theme-color" content="#101c29">
-<title>태양이 잠긴 바다</title>
-
+<meta name="theme-color" content="#263a4b">
+<title>빛이 잠긴 바다</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Noto+Serif+KR:wght@300;400;500;600&family=Cormorant+Garamond:wght@400;500;600&display=swap" rel="stylesheet">
-
+<link href="https://fonts.googleapis.com/css2?family=Gowun+Batang:wght@400;700&family=Noto+Serif+KR:wght@300;400;500;600&display=swap" rel="stylesheet">
 <style>
-:root {
-  --ink: #e5e8e8;
-  --muted: #a7b4bd;
-  --gold: #dfcba6;
-  --night: #0a1625;
-}
-
-* {
-  box-sizing: border-box;
-}
-
-html,
-body {
-  margin: 0;
-  width: 100%;
-  height: 100%;
-  overflow: hidden;
-}
-
-body {
-  font-family: "Noto Serif KR", serif;
-  background: #091625;
-  color: var(--ink);
-}
-
-button {
-  font: inherit;
-}
-
-button:focus-visible {
-  outline: 1px solid #f0dfb9;
-  outline-offset: 5px;
-}
-
-/* ─────────────────────────
-   MAIN SCENE
-───────────────────────── */
-
-.world {
-  position: relative;
-  width: 100%;
-  height: 100vh;
-  height: 100svh;
-  overflow: hidden;
-  isolation: isolate;
-
-  background:
-    radial-gradient(
-      ellipse at 72% 35%,
-      rgba(174,177,164,.17),
-      transparent 45%
-    ),
-    linear-gradient(
-      160deg,
-      #263a4b 0%,
-      #4a5d6c 37%,
-      #77858b 70%,
-      #a4a19a 100%
-    );
-}
-
-.world::after {
-  content: "";
-  position: absolute;
-  inset: 0;
-  z-index: 17;
-  pointer-events: none;
-  opacity: .11;
-  background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 180 180' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.85' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='.45'/%3E%3C/svg%3E");
-  mix-blend-mode: soft-light;
-}
-
-/* ─────────────────────────
-   CLOUDS
-───────────────────────── */
-
-.cloud-field {
-  position: absolute;
-  inset: -15%;
-  z-index: 1;
-  pointer-events: none;
-  overflow: hidden;
-}
-
-.cloud {
-  position: absolute;
-  width: 72vw;
-  height: 24vh;
-  min-height: 120px;
-  border-radius: 50%;
-  filter: blur(32px);
-  opacity: .65;
-  animation: cloudDrift 55s ease-in-out infinite alternate;
-}
-
-.cloud.one {
-  top: 4%;
-  left: -16%;
-  background: radial-gradient(
-    ellipse,
-    rgba(25,41,57,.9),
-    rgba(41,56,69,.55) 55%,
-    transparent 75%
-  );
-}
-
-.cloud.two {
-  top: 7%;
-  right: -27%;
-  width: 90vw;
-  height: 30vh;
-  background: radial-gradient(
-    ellipse,
-    rgba(177,185,185,.65),
-    rgba(113,130,139,.45) 53%,
-    transparent 75%
-  );
-  animation-duration: 75s;
-  animation-direction: alternate-reverse;
-}
-
-.cloud.three {
-  top: 30%;
-  left: 8%;
-  width: 65vw;
-  height: 16vh;
-  background: radial-gradient(
-    ellipse,
-    rgba(31,47,60,.62),
-    rgba(65,82,93,.3) 55%,
-    transparent 78%
-  );
-  animation-duration: 67s;
-}
-
-.cloud.four {
-  top: -10%;
-  left: 24%;
-  width: 110vw;
-  height: 22vh;
-  background: radial-gradient(
-    ellipse,
-    rgba(22,36,48,.8),
-    rgba(45,62,76,.4) 60%,
-    transparent 78%
-  );
-  animation-duration: 85s;
-}
-
-.cloud.five {
-  top: 42%;
-  right: -15%;
-  width: 70vw;
-  height: 14vh;
-  background: radial-gradient(
-    ellipse,
-    rgba(190,189,178,.34),
-    transparent 70%
-  );
-  animation-duration: 63s;
-}
-
-@keyframes cloudDrift {
-  from {
-    transform: translateX(-4%) scale(1);
-  }
-  to {
-    transform: translateX(7%) scale(1.08);
-  }
-}
-
-/* ─────────────────────────
-   SUN
-───────────────────────── */
-
-.sun-area {
-  position: absolute;
-  z-index: 3;
-  top: 20%;
-  right: 20%;
-  width: clamp(115px, 17vw, 230px);
-  aspect-ratio: 1;
-  display: grid;
-  place-items: center;
-  border: none;
-  background: transparent;
-  padding: 0;
-  cursor: pointer;
-  -webkit-tap-highlight-color: transparent;
-}
-
-.sun-aura {
-  position: absolute;
-  inset: -70%;
-  border-radius: 50%;
-  background: radial-gradient(
-    circle,
-    rgba(247,223,167,.2) 0%,
-    rgba(236,213,166,.13) 21%,
-    rgba(233,208,169,.055) 43%,
-    transparent 67%
-  );
-  animation: sunBreathe 9s ease-in-out infinite alternate;
-}
-
-.sun-ring {
-  position: absolute;
-  width: 82%;
-  height: 82%;
-  border-radius: 50%;
-  border: 1px solid rgba(245,225,185,.12);
-  box-shadow:
-    0 0 28px rgba(255,225,172,.13),
-    inset 0 0 25px rgba(255,229,180,.06);
-}
-
-.sun-core {
-  position: relative;
-  width: 60%;
-  aspect-ratio: 1;
-  border-radius: 50%;
-  background: radial-gradient(
-    circle at 45% 40%,
-    #f7ecd3 0%,
-    #ead8b1 46%,
-    #b6ad9d 100%
-  );
-  box-shadow:
-    0 0 22px rgba(252,230,187,.38),
-    0 0 65px rgba(242,214,166,.2),
-    0 0 130px rgba(236,203,155,.15);
-  opacity: .89;
-  transition:
-    transform .8s,
-    box-shadow .8s;
-}
-
-.sun-area:hover .sun-core {
-  transform: scale(1.07);
-  box-shadow:
-    0 0 35px rgba(255,232,191,.55),
-    0 0 90px rgba(242,214,166,.3);
-}
-
-@keyframes sunBreathe {
-  from {
-    transform: scale(.95);
-    opacity: .7;
-  }
-  to {
-    transform: scale(1.09);
-    opacity: 1;
-  }
-}
-
-.sun-veil {
-  position: absolute;
-  z-index: 4;
-  top: 20%;
-  right: 3%;
-  width: 50%;
-  height: 16%;
-  border-radius: 50%;
-  background: radial-gradient(
-    ellipse,
-    rgba(79,96,108,.29),
-    rgba(112,125,128,.14) 55%,
-    transparent 75%
-  );
-  filter: blur(22px);
-  pointer-events: none;
-  animation: veilMove 36s ease-in-out infinite alternate;
-}
-
-@keyframes veilMove {
-  to {
-    transform: translateX(-18%);
-  }
-}
-
-/* ─────────────────────────
-   DIAGONAL SEA
-───────────────────────── */
-
-.sea {
-  position: absolute;
-  z-index: 5;
-  inset: 0;
-  overflow: hidden;
-
-  clip-path: polygon(
-    0 20.5%,
-    100% 79.5%,
-    100% 100%,
-    0 100%
-  );
-
-  background:
-    radial-gradient(
-      ellipse at 23% 71%,
-      rgba(65,102,124,.32),
-      transparent 43%
-    ),
-    linear-gradient(
-      145deg,
-      #29485c 0%,
-      #1a3349 35%,
-      #0c2033 67%,
-      #071524 100%
-    );
-}
-
-.sea-glow {
-  position: absolute;
-  inset: 0;
-  background: radial-gradient(
-    ellipse 45% 55% at 24% 69%,
-    rgba(164,193,213,.13),
-    transparent 75%
-  );
-  animation: seaLight 12s ease-in-out infinite alternate;
-}
-
-@keyframes seaLight {
-  from {
-    opacity: .65;
-  }
-  to {
-    opacity: 1;
-  }
-}
-
-.water-lines {
-  position: absolute;
-  inset: 0;
-  opacity: .38;
-  background: repeating-linear-gradient(
-    174deg,
-    transparent 0,
-    transparent 22px,
-    rgba(182,208,220,.055) 23px,
-    transparent 25px,
-    transparent 53px
-  );
-  animation: waterDrift 19s linear infinite alternate;
-}
-
-.water-lines.second {
-  opacity: .2;
-  transform: scale(1.2);
-  animation-duration: 28s;
-  animation-direction: alternate-reverse;
-}
-
-@keyframes waterDrift {
-  to {
-    background-position: 85px 48px;
-  }
-}
-
-/* ─────────────────────────
-   MOON
-───────────────────────── */
-
-.moon-area {
-  position: absolute;
-  z-index: 8;
-  left: 15%;
-  top: 61%;
-  width: clamp(100px, 14vw, 190px);
-  aspect-ratio: 1;
-  display: grid;
-  place-items: center;
-  border: 0;
-  padding: 0;
-  background: transparent;
-  cursor: pointer;
-  -webkit-tap-highlight-color: transparent;
-}
-
-.moon-halo {
-  position: absolute;
-  inset: -75%;
-  border-radius: 50%;
-  background: radial-gradient(
-    circle,
-    rgba(192,220,240,.17),
-    rgba(147,181,211,.075) 31%,
-    transparent 65%
-  );
-  animation: moonPulse 10s ease-in-out infinite alternate;
-}
-
-.moon-core {
-  position: relative;
-  width: 78%;
-  aspect-ratio: 1;
-  border-radius: 50%;
-  overflow: hidden;
-  background:
-    radial-gradient(
-      circle at 32% 31%,
-      rgba(169,181,195,.24) 0 8%,
-      transparent 10%
-    ),
-    radial-gradient(
-      circle at 67% 64%,
-      rgba(134,153,176,.19) 0 13%,
-      transparent 15%
-    ),
-    radial-gradient(
-      circle at 68% 27%,
-      rgba(137,155,176,.16) 0 7%,
-      transparent 9%
-    ),
-    radial-gradient(
-      circle at 43% 72%,
-      rgba(146,164,187,.14) 0 10%,
-      transparent 12%
-    ),
-    radial-gradient(
-      circle at 40% 35%,
-      #f1f4ef,
-      #cbd8e3 55%,
-      #91a9bd 100%
-    );
-
-  box-shadow:
-    0 0 24px rgba(201,226,247,.36),
-    0 0 75px rgba(153,197,230,.17),
-    0 0 130px rgba(132,185,226,.09);
-
-  transition: transform .8s;
-}
-
-.moon-core::after {
-  content: "";
-  position: absolute;
-  inset: 0;
-  border-radius: inherit;
-  background: linear-gradient(
-    165deg,
-    rgba(10,39,65,.04),
-    rgba(13,51,79,.29)
-  );
-}
-
-.moon-area:hover .moon-core {
-  transform: scale(1.07);
-}
-
-@keyframes moonPulse {
-  from {
-    opacity: .65;
-    transform: scale(.94);
-  }
-  to {
-    opacity: 1;
-    transform: scale(1.07);
-  }
-}
-
-.moon-ripples {
-  position: absolute;
-  z-index: 7;
-  left: 11%;
-  top: 80%;
-  width: 25%;
-  height: 12%;
-  pointer-events: none;
-}
-
-.moon-ripples span {
-  display: block;
-  height: 1px;
-  margin: 13px auto;
-  border-radius: 50%;
-  background: linear-gradient(
-    90deg,
-    transparent,
-    rgba(188,219,239,.32),
-    transparent
-  );
-  animation: rippleShimmer 6s ease-in-out infinite alternate;
-}
-
-.moon-ripples span:nth-child(1) {
-  width: 70%;
-}
-
-.moon-ripples span:nth-child(2) {
-  width: 48%;
-  animation-delay: 1s;
-}
-
-.moon-ripples span:nth-child(3) {
-  width: 85%;
-  animation-delay: 2s;
-}
-
-@keyframes rippleShimmer {
-  from {
-    opacity: .3;
-    transform: translateX(-9px);
-  }
-  to {
-    opacity: .9;
-    transform: translateX(9px);
-  }
-}
-
-/* ─────────────────────────
-   HORIZON & SHIP
-   SVG coordinates stay aligned
-───────────────────────── */
-
-.horizon-scene {
-  position: absolute;
-  z-index: 10;
-  inset: 0;
-  width: 100%;
-  height: 100%;
-  pointer-events: none;
-  overflow: visible;
-}
-
-.horizon-line {
-  stroke: rgba(207,220,221,.7);
-  stroke-width: 1.2;
-  filter: drop-shadow(0 0 5px rgba(190,213,219,.45));
-}
-
-.ship-group {
-  transform-origin: 0 0;
-  animation: shipRock 9s ease-in-out infinite alternate;
-}
-
-@keyframes shipRock {
-  from {
-    transform: rotate(-.5deg);
-  }
-  to {
-    transform: rotate(.5deg);
-  }
-}
-
-/* ─────────────────────────
-   TITLE
-───────────────────────── */
-
-.title-wrap {
-  position: absolute;
-  z-index: 12;
-  top: 9%;
-  left: 50%;
-  width: 90%;
-  transform: translateX(-50%);
-  text-align: center;
-  pointer-events: none;
-}
-
-.main-title {
-  margin: 0;
-  font-size: clamp(23px, 3.4vw, 43px);
-  font-weight: 300;
-  letter-spacing: .26em;
-  text-indent: .26em;
-  color: #edf0ec;
-  text-shadow:
-    0 2px 12px rgba(4,15,27,.4),
-    0 0 30px rgba(226,233,229,.14);
-}
-
-.eng-title {
-  display: block;
-  margin-top: 13px;
-  font-family: "Cormorant Garamond", serif;
-  font-size: clamp(10px, 1.3vw, 14px);
-  font-weight: 400;
-  letter-spacing: .3em;
-  color: #d4d9d6;
-}
-
-.vignette {
-  position: absolute;
-  z-index: 11;
-  inset: 0;
-  background: radial-gradient(
-    ellipse at 50% 46%,
-    transparent 38%,
-    rgba(4,12,24,.16) 72%,
-    rgba(4,11,22,.4) 100%
-  );
-  pointer-events: none;
-}
-
-/* ─────────────────────────
-   PROFILE MODAL
-───────────────────────── */
-
-.modal {
-  position: absolute;
-  z-index: 30;
-  inset: 0;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  padding: 22px;
-  background: rgba(4,13,25,.58);
-  backdrop-filter: blur(9px);
-  opacity: 0;
-  visibility: hidden;
-  pointer-events: none;
-  transition:
-    opacity .7s ease,
-    visibility .7s ease;
-}
-
-.modal.open {
-  opacity: 1;
-  visibility: visible;
-  pointer-events: auto;
-}
-
-.profile {
-  position: relative;
-  width: min(410px, 100%);
-  max-height: min(75svh, 620px);
-  overflow: hidden;
-  display: flex;
-  flex-direction: column;
-  border: 1px solid rgba(214,225,230,.24);
-  background: linear-gradient(
-    150deg,
-    rgba(35,54,70,.96),
-    rgba(13,29,44,.97)
-  );
-  box-shadow: 0 25px 90px rgba(0,0,0,.36);
-  transform: translateY(18px) scale(.98);
-  transition: transform .7s ease;
-}
-
-.modal.open .profile {
-  transform: translateY(0) scale(1);
-}
-
-.profile.sun-profile {
-  background: linear-gradient(
-    150deg,
-    rgba(65,72,74,.97),
-    rgba(30,42,51,.98)
-  );
-}
-
-.profile-header {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  padding: 17px 22px;
-  border-bottom: 1px solid rgba(214,225,230,.14);
-}
-
-.profile-label {
-  font-family: "Cormorant Garamond", serif;
-  font-size: 12px;
-  letter-spacing: .25em;
-  color: #b9c7ce;
-}
-
-.close-profile {
-  border: none;
-  background: transparent;
-  color: #dce4e5;
-  font-size: 25px;
-  line-height: 1;
-  cursor: pointer;
-}
-
-.profile-body {
-  padding: 29px 30px 34px;
-  overflow-y: auto;
-  overscroll-behavior: contain;
-  scrollbar-width: thin;
-  scrollbar-color: #526677 transparent;
-}
-
-.profile-name {
-  margin: 0;
-  font-size: 29px;
-  font-weight: 300;
-  letter-spacing: .12em;
-}
-
-.profile-english {
-  margin: 9px 0 28px;
-  font-family: "Cormorant Garamond", serif;
-  font-size: 14px;
-  letter-spacing: .2em;
-  color: #a8b9c5;
-}
-
-.profile-rule {
-  width: 35px;
-  height: 1px;
-  margin: 25px 0;
-  background: rgba(215,226,230,.48);
-}
-
-.profile-text {
-  font-size: 12px;
-  font-weight: 300;
-  line-height: 2.3;
-  color: #d6dfe2;
-  word-break: keep-all;
-}
-
-.profile-text p {
-  margin: 0 0 15px;
-}
-
-.profile-quote {
-  margin-top: 30px;
-  color: #e4d7bc;
-  font-size: 13px;
-  line-height: 2;
-}
-
-/* ─────────────────────────
-   MOBILE
-───────────────────────── */
-
-@media (max-width: 650px) {
-  .title-wrap {
-    top: 11%;
-  }
-
-  .main-title {
-    letter-spacing: .19em;
-    text-indent: .19em;
-  }
-
-  .sun-area {
-    top: 26%;
-    right: 11%;
-    width: 135px;
-  }
-
-  .moon-area {
-    top: 64%;
-    left: 8%;
-    width: 115px;
-  }
-
-  .cloud {
-    filter: blur(23px);
-  }
-
-  .profile-body {
-    padding: 23px 24px 28px;
-  }
-}
-
-@media (prefers-reduced-motion: reduce) {
-  *,
-  *::before,
-  *::after {
-    animation-duration: .01ms !important;
-    transition-duration: .01ms !important;
-  }
-}
+*{box-sizing:border-box}html,body{margin:0;width:100%;height:100%;overflow:hidden}body{background:#0a1c2d;color:#edf0ee;font-family:'Noto Serif KR',serif}button{font:inherit}button:focus-visible{outline:2px solid #fff1d0;outline-offset:5px}
+.world{position:relative;width:100%;height:100vh;height:100svh;overflow:hidden;isolation:isolate;background:#293f50}
+.landscape{position:absolute;inset:0;width:100%;height:100%;display:block;pointer-events:none}
+/* The interactive targets are separate from the scenery so only the celestial bodies open profiles. */
+.celestial{position:absolute;z-index:5;display:block;border:0;padding:0;border-radius:50%;background:transparent;cursor:pointer;-webkit-tap-highlight-color:transparent;transition:filter .35s,transform .35s}
+.celestial:hover,.celestial:focus-visible{filter:brightness(1.16);transform:scale(1.06)}
+.sun-button{left:var(--sun-left);top:var(--sun-top);width:var(--sun-size);height:var(--sun-size)}
+.moon-button{left:var(--moon-left);top:var(--moon-top);width:var(--moon-size);height:var(--moon-size)}
+.celestial::after{content:"";position:absolute;inset:15%;border:1px solid rgba(255,255,255,.0);border-radius:50%;transition:border-color .3s}.celestial:hover::after{border-color:rgba(255,255,255,.34)}
+.scene-title{position:absolute;z-index:7;top:7%;left:0;width:100%;text-align:center;pointer-events:none;padding:0 15px;font-size:clamp(23px,3.1vw,43px);font-weight:300;letter-spacing:.25em;text-indent:.25em;text-shadow:0 2px 15px #122536,0 0 30px #182c3b;margin:0}
+.cloud-float-a{animation:driftA 40s ease-in-out infinite alternate;transform-origin:center}.cloud-float-b{animation:driftB 55s ease-in-out infinite alternate;transform-origin:center}.wave-shift{animation:wave 12s ease-in-out infinite alternate}.ship-sway{animation:sway 8s ease-in-out infinite alternate;transform-box:fill-box;transform-origin:50% 100%}.light-breathe{animation:glow 7s ease-in-out infinite alternate}
+@keyframes driftA{to{transform:translateX(38px)}}@keyframes driftB{to{transform:translateX(-44px)}}@keyframes wave{to{transform:translate(12px,-3px)}}@keyframes sway{to{transform:rotate(.7deg)}}@keyframes glow{to{opacity:.68}}
+.modal{position:fixed;z-index:30;inset:0;display:flex;justify-content:center;align-items:center;padding:20px;background:rgba(5,14,26,.66);backdrop-filter:blur(9px);opacity:0;visibility:hidden;pointer-events:none;transition:opacity .35s,visibility .35s}.modal.open{opacity:1;visibility:visible;pointer-events:auto}
+.profile{width:min(370px,100%);border:1px solid rgba(226,235,236,.35);background:linear-gradient(150deg,#2c4050,#102131);box-shadow:0 18px 65px #06121e99;transform:translateY(12px);transition:transform .35s}.modal.open .profile{transform:translateY(0)}
+.profile-header{display:flex;justify-content:space-between;align-items:center;padding:17px 23px;border-bottom:1px solid #d5e0e033}.profile-heading{font-size:16px;letter-spacing:.16em;font-weight:400;margin:0}.close-profile{background:none;border:0;color:#e9eeef;font-size:27px;line-height:1;cursor:pointer}.profile-body{min-height:125px;display:grid;place-items:center;padding:32px}.profile-name{font-size:28px;letter-spacing:.16em;font-weight:300;margin:0}
+@media(max-width:600px){.scene-title{top:10%;font-size:clamp(22px,5.4vw,31px);letter-spacing:.17em;text-indent:.17em}.profile{width:min(340px,100%)}}
+@media(prefers-reduced-motion:reduce){*,*::before,*::after{animation:none!important;transition:none!important}}
 </style>
 </head>
-
 <body>
-
 <main class="world" id="world">
-
-  <!-- CLOUDS -->
-
-  <div class="cloud-field" aria-hidden="true">
-    <div class="cloud one"></div>
-    <div class="cloud two"></div>
-    <div class="cloud three"></div>
-    <div class="cloud four"></div>
-    <div class="cloud five"></div>
-  </div>
-
-  <!-- SUN / CHA TAEGYEONG -->
-
-  <button
-    class="sun-area"
-    id="sunButton"
-    type="button"
-    aria-label="차태경 프로필 열기"
-  >
-    <span class="sun-aura"></span>
-    <span class="sun-ring"></span>
-    <span class="sun-core"></span>
-  </button>
-
-  <div class="sun-veil" aria-hidden="true"></div>
-
-  <!-- SEA -->
-
-  <div class="sea" aria-hidden="true">
-    <div class="sea-glow"></div>
-    <div class="water-lines"></div>
-    <div class="water-lines second"></div>
-  </div>
-
-  <!-- MOON / KANG JIHAN -->
-
-  <button
-    class="moon-area"
-    id="moonButton"
-    type="button"
-    aria-label="강지한 프로필 열기"
-  >
-    <span class="moon-halo"></span>
-    <span class="moon-core"></span>
-  </button>
-
-  <div class="moon-ripples" aria-hidden="true">
-    <span></span>
-    <span></span>
-    <span></span>
-  </div>
-
-  <!-- HORIZON & PIRATE SHIP -->
-
-  <svg
-    class="horizon-scene"
-    id="horizonScene"
-    xmlns="http://www.w3.org/2000/svg"
-    aria-hidden="true"
-    preserveAspectRatio="none"
-  >
-    <defs>
-      <filter id="horizonGlow">
-        <feGaussianBlur stdDeviation="3"/>
-      </filter>
-    </defs>
-
-    <line
-      id="horizonGlowLine"
-      stroke="rgba(193,215,222,.23)"
-      stroke-width="7"
-      filter="url(#horizonGlow)"
-    />
-
-    <line
-      id="horizonLine"
-      class="horizon-line"
-    />
-
-    <g id="shipPosition">
-      <g id="shipTilt">
-        <g class="ship-group">
-          <g
-            fill="#101d2a"
-            stroke="#101d2a"
-            stroke-width="1.7"
-            stroke-linejoin="round"
-            stroke-linecap="round"
-          >
-            <!-- hull -->
-            <path d="
-              M-72 -17
-              L72 -17
-              L55 0
-              L-53 0
-              Z
-            "/>
-
-            <!-- deck -->
-            <path
-              d="M-61 -21 H65"
-              fill="none"
-              stroke-width="3"
-            />
-
-            <!-- masts -->
-            <path
-              d="
-                M-10 -111 V-21
-                M33 -88 V-21
-                M-42 -65 V-21
-              "
-              fill="none"
-              stroke-width="2.7"
-            />
-
-            <!-- main sails -->
-            <path d="
-              M-15 -106
-              Q-35 -78 -17 -30
-              L-15 -30
-              Z
-            "/>
-
-            <path d="
-              M-5 -107
-              Q33 -74 -3 -30
-              L-5 -30
-              Z
-            "/>
-
-            <!-- second sails -->
-            <path d="
-              M29 -85
-              Q10 -63 29 -34
-              Z
-            "/>
-
-            <path d="
-              M37 -84
-              Q63 -62 37 -34
-              Z
-            "/>
-
-            <!-- forward sail -->
-            <path d="
-              M-44 -62
-              Q-62 -42 -44 -25
-              Z
-            "/>
-
-            <!-- rigging -->
-            <path
-              d="
-                M-10 -111 L-61 -21
-                M-10 -111 L68 -21
-                M33 -88 L71 -21
-              "
-              fill="none"
-              stroke-width="1"
-              opacity=".7"
-            />
-
-            <!-- flag -->
-            <path d="
-              M-10 -111
-              L12 -107
-              L-10 -101
-              Z
-            "/>
-
-            <!-- stern -->
-            <path
-              d="
-                M45 -27
-                L45 -36
-                L63 -36
-                L63 -19
-              "
-              fill="none"
-            />
-
-            <!-- small windows -->
-            <g
-              fill="#b7a88b"
-              stroke="none"
-              opacity=".55"
-            >
-              <circle cx="-28" cy="-11" r="2"/>
-              <circle cx="-2" cy="-11" r="2"/>
-              <circle cx="24" cy="-11" r="2"/>
-            </g>
-          </g>
-        </g>
-      </g>
-    </g>
-  </svg>
-
-  <!-- TITLE -->
-
-  <header class="title-wrap">
-    <h1 class="main-title">태양이 잠긴 바다</h1>
-    <span class="eng-title">
-      THE SEA WHERE THE SUN SANK
-    </span>
-  </header>
-
-  <div class="vignette"></div>
-
-  <!-- CHARACTER PROFILE -->
-
-  <div
-    class="modal"
-    id="modal"
-    aria-hidden="true"
-  >
-    <section
-      class="profile"
-      id="profile"
-      role="dialog"
-      aria-modal="true"
-      aria-labelledby="profileName"
-    >
-      <div class="profile-header">
-        <span class="profile-label">
-          THE SEA WHERE THE SUN SANK
-        </span>
-
-        <button
-          class="close-profile"
-          id="closeProfile"
-          type="button"
-          aria-label="프로필 닫기"
-        >×</button>
-      </div>
-
-      <div class="profile-body" id="profileBody"></div>
-    </section>
-  </div>
-
+<svg class="landscape" id="landscape" viewBox="0 0 1000 700" preserveAspectRatio="none" aria-hidden="true" xmlns="http://www.w3.org/2000/svg">
+<defs>
+ <linearGradient id="sky" x1="0" y1="0" x2=".7" y2="1"><stop stop-color="#293d4e"/><stop offset=".42" stop-color="#586d7c"/><stop offset=".76" stop-color="#87969c"/><stop offset="1" stop-color="#aaa9a0"/></linearGradient>
+ <linearGradient id="sea" x1="0" y1="0" x2=".8" y2="1"><stop stop-color="#3c6074"/><stop offset=".35" stop-color="#23465d"/><stop offset=".72" stop-color="#112e45"/><stop offset="1" stop-color="#071b30"/></linearGradient>
+ <radialGradient id="sunLight"><stop stop-color="#fff4d5" stop-opacity=".7"/><stop offset=".3" stop-color="#ffe6ac" stop-opacity=".27"/><stop offset="1" stop-color="#ffedcc" stop-opacity="0"/></radialGradient>
+ <radialGradient id="moonLight"><stop stop-color="#e5f7ff" stop-opacity=".5"/><stop offset=".32" stop-color="#a6d5f2" stop-opacity=".19"/><stop offset="1" stop-color="#a6d5f2" stop-opacity="0"/></radialGradient>
+ <radialGradient id="sunDisc" cx="38%" cy="30%"><stop stop-color="#fff9df"/><stop offset=".65" stop-color="#ffe4aa"/><stop offset="1" stop-color="#d3b77d"/></radialGradient>
+ <radialGradient id="moonDisc" cx="35%" cy="30%"><stop stop-color="#f8fcff"/><stop offset=".7" stop-color="#d9eaf5"/><stop offset="1" stop-color="#9bb9cf"/></radialGradient>
+ <filter id="soft"><feGaussianBlur stdDeviation="19"/></filter>
+ <filter id="fine"><feGaussianBlur stdDeviation="3.5"/></filter>
+ <clipPath id="seaClip"><path id="seaClipPath" d="M0 144 L1000 556 L1000 700 L0 700 Z"/></clipPath>
+ <filter id="grain"><feTurbulence type="fractalNoise" baseFrequency=".025 .06" numOctaves="3" seed="4" stitchTiles="stitch"/><feColorMatrix type="saturate" values="0"/><feComponentTransfer><feFuncA type="linear" slope=".08"/></feComponentTransfer></filter>
+</defs>
+<!-- Cloudy sky -->
+<rect width="1000" height="700" fill="url(#sky)"/>
+<g class="cloud-float-a" filter="url(#soft)" opacity=".7">
+ <path d="M-100 110 Q80 -25 235 57 Q365 -10 518 72 Q680 12 855 74 Q960 13 1130 95 L1130 153 Q900 118 690 142 Q470 105 280 154 Q100 110 -100 165Z" fill="#283f52"/>
+ <path d="M-100 230 Q75 167 180 201 Q280 149 401 210 Q512 170 660 221 Q790 164 1010 203 L1100 258 Q865 237 701 275 Q493 240 331 268 Q134 231 -100 285Z" fill="#bac1bf" opacity=".58"/>
+</g>
+<g class="cloud-float-b" opacity=".72" filter="url(#soft)">
+ <path d="M-110 32 Q110 -30 279 25 Q420 -27 601 26 Q780 -30 1080 36 L1100 92 Q810 59 612 97 Q400 64 206 104 Q18 70 -100 113Z" fill="#23394c"/>
+ <path d="M-120 310 Q62 265 198 290 Q342 251 483 303 Q615 258 764 306 Q893 270 1100 306 L1100 358 Q844 330 690 365 Q442 332 280 366 Q70 339 -120 375Z" fill="#d2d0c7" opacity=".3"/>
+</g>
+<g opacity=".25" stroke="#e1e4dc" stroke-width="2" fill="none">
+ <path d="M-40 178 Q210 150 430 190 T1000 185"/><path d="M-30 295 Q240 277 480 312 T1050 315"/>
+</g>
+<!-- Sun behind soft atmospheric veil -->
+<g id="sunArtwork" class="light-breathe"><circle id="sunAura" cx="753" cy="177" r="190" fill="url(#sunLight)"/><circle id="sunDiscShape" cx="753" cy="177" r="50" fill="url(#sunDisc)"/><circle id="sunGlowRing" cx="753" cy="177" r="54" fill="none" stroke="#ffe7b8" stroke-opacity=".38" stroke-width="5" filter="url(#fine)"/></g>
+<g class="cloud-float-b" filter="url(#soft)" opacity=".34"><path d="M585 175 Q675 135 770 162 Q856 138 954 180 Q870 202 750 187 Q659 211 585 175Z" fill="#758591"/></g>
+<!-- Sea is a polygon, exactly sharing the horizon endpoints -->
+<g clip-path="url(#seaClip)">
+ <rect width="1000" height="700" fill="url(#sea)"/>
+ <ellipse id="moonAura" cx="232" cy="540" rx="185" ry="188" fill="url(#moonLight)"/>
+ <g class="wave-shift" stroke-linecap="round" fill="none">
+  <path d="M-100 360 Q120 341 280 364 T700 367 T1110 361 M-80 400 Q100 382 290 404 T700 410 T1100 404 M-80 446 Q140 421 365 447 T810 452 T1100 441" stroke="#d1e4e9" stroke-opacity=".15" stroke-width="3"/>
+  <path d="M-100 491 Q80 468 275 493 T670 492 T1100 491 M-80 534 Q150 513 320 535 T710 540 T1100 532 M-80 578 Q170 558 340 581 T790 581 T1100 574 M-80 630 Q150 608 330 630 T770 631 T1100 625 M-80 676 Q140 660 350 680 T800 680 T1100 668" stroke="#a9d1df" stroke-opacity=".18" stroke-width="2"/>
+  <path d="M-70 466 Q125 452 300 472 T700 476 T1090 470 M-70 554 Q120 537 320 558 T700 561 T1090 555 M-70 656 Q150 636 340 656 T750 659 T1090 652" stroke="#061c30" stroke-opacity=".38" stroke-width="9"/>
+ </g>
+ <!-- Underwater full moon -->
+ <circle id="moonDiscShape" cx="232" cy="540" r="54" fill="url(#moonDisc)"/>
+ <g id="moonCraters" fill="#819fb5" opacity=".18"><circle cx="213" cy="518" r="10"/><circle cx="249" cy="549" r="15"/><circle cx="210" cy="558" r="7"/><circle cx="255" cy="512" r="6"/></g>
+ <path id="moonOverlay" d="M178 540 Q230 529 286 540 L286 600 L178 600Z" fill="#3c7996" opacity=".13"/>
+ <g class="wave-shift" stroke="#d6eef7" stroke-opacity=".2" fill="none" stroke-width="2"><path d="M132 611 Q216 600 320 612 M158 627 Q232 620 300 630 M110 651 Q230 642 354 651"/></g>
+ <rect width="1000" height="700" filter="url(#grain)" opacity=".25"/>
+</g>
+<!-- Soft horizon -->
+<path id="horizonGlow" d="M0 144 L1000 556" stroke="#d5e7e8" stroke-opacity=".16" stroke-width="9" filter="url(#fine)" fill="none"/>
+<path id="horizon" d="M0 144 L1000 556" stroke="#c9dde0" stroke-opacity=".65" stroke-width="1.7" fill="none"/>
+<!-- Pirate ship; origin is the bottom of the hull, sitting on the horizon -->
+<g id="shipPosition" transform="translate(280 259)"><g id="shipAngle" transform="rotate(22.4)"><g id="shipScale" transform="scale(.83)"><g class="ship-sway">
+<!-- sterncastle and bowsprit -->
+<path d="M-100 -30 L-92 -56 L-63 -56 L-54 -30 M76 -31 L121 -58" fill="none" stroke="#101b28" stroke-width="5" stroke-linejoin="round"/>
+<path d="M-103 -38 L-98 -56 L-71 -56 L-67 -38Z" fill="#111b29"/>
+<path d="M-108 -30 Q-87 -8 -51 -5 L56 -5 Q83 -8 99 -32 L82 -24 L-100 -24Z" fill="#0d1926" stroke="#050f1b" stroke-width="3"/>
+<path d="M-87 -24 Q-10 -31 83 -24" stroke="#40566a" stroke-opacity=".65" stroke-width="2" fill="none"/>
+<path d="M-73 -9 L61 -9" stroke="#b5a17b" stroke-opacity=".42" stroke-width="2"/>
+<g fill="#c5a46e" opacity=".6"><circle cx="-53" cy="-17" r="2.8"/><circle cx="-24" cy="-18" r="2.8"/><circle cx="6" cy="-18" r="2.8"/><circle cx="35" cy="-17" r="2.8"/><circle cx="63" cy="-17" r="2.8"/></g>
+<!-- masts and spars -->
+<g stroke="#0c1623" stroke-linecap="round" fill="none"><path d="M-27 -27 L-27 -185 M39 -28 L39 -141 M-78 -36 L-78 -100" stroke-width="5"/><path d="M-82 -156 L29 -156 M-77 -117 L24 -117 M8 -121 L75 -121 M10 -82 L76 -82" stroke-width="3"/><path d="M-27 -185 L-98 -34 M-27 -185 L89 -33 M39 -143 L100 -32 M-78 -100 L-103 -32" stroke-width="1.5" opacity=".72"/></g>
+<!-- unmistakable black square sails -->
+<path d="M-79 -153 Q-28 -163 26 -153 L20 -120 Q-25 -128 -75 -120Z" fill="#142230" stroke="#091321" stroke-width="2"/>
+<path d="M-74 -114 Q-26 -123 22 -114 L18 -62 Q-27 -73 -68 -62Z" fill="#101d2a" stroke="#091321" stroke-width="2"/>
+<path d="M10 -118 Q43 -127 76 -118 L72 -84 Q42 -90 15 -84Z" fill="#142230" stroke="#091321" stroke-width="2"/>
+<path d="M14 -80 Q44 -88 72 -80 L65 -40 Q43 -45 19 -40Z" fill="#101b28" stroke="#091321" stroke-width="2"/>
+<path d="M-80 -96 Q-97 -71 -88 -45 L-76 -48Z" fill="#172738"/>
+<!-- sail seams -->
+<g stroke="#637384" stroke-opacity=".25" stroke-width="1" fill="none"><path d="M-27 -157 L-26 -124 M-27 -116 L-27 -68 M42 -121 L43 -86 M43 -82 L43 -43"/></g>
+<!-- skull-and-crossbones flag -->
+<path d="M-27 -185 L15 -177 L-27 -169Z" fill="#0a1522" stroke="#0a1522" stroke-width="2"/>
+<g fill="#d9d9cb" transform="translate(-13 -179) scale(.42)"><circle cx="0" cy="0" r="7"/><rect x="-4" y="3" width="8" height="7"/><circle cx="-2.5" cy="0" r="1.3" fill="#0a1522"/><circle cx="2.5" cy="0" r="1.3" fill="#0a1522"/><path d="M-12 -8 L12 10 M12 -8 L-12 10" stroke="#d9d9cb" stroke-width="2.5"/></g>
+<!-- small deck rail -->
+<g stroke="#0b1723" stroke-width="2" fill="none"><path d="M-93 -34 L80 -34"/><path d="M-78 -34 V-42 M-48 -34 V-42 M-17 -34 V-42 M15 -34 V-42 M47 -34 V-42 M77 -34 V-42"/></g>
+</g></g></g></g>
+</svg>
+<h1 class="scene-title">빛이 잠긴 바다</h1>
+<button class="celestial sun-button" id="sunButton" aria-label="해를 눌러 선장님 보기" type="button"></button>
+<button class="celestial moon-button" id="moonButton" aria-label="달을 눌러 아귀인어 보기" type="button"></button>
+<div class="modal" id="modal" aria-hidden="true"><section class="profile" role="dialog" aria-modal="true" aria-labelledby="profileHeading"><div class="profile-header"><h2 class="profile-heading" id="profileHeading"></h2><button type="button" class="close-profile" id="closeProfile" aria-label="닫기">×</button></div><div class="profile-body"><p class="profile-name" id="profileName"></p></div></section></div>
 </main>
-
 <script>
-(() => {
-  const modal = document.getElementById("modal");
-  const profile = document.getElementById("profile");
-  const profileBody = document.getElementById("profileBody");
-  const closeProfileButton = document.getElementById("closeProfile");
-
-  const sunButton = document.getElementById("sunButton");
-  const moonButton = document.getElementById("moonButton");
-
-  let previousFocus = null;
-
-  /* ─────────────────────────
-     RESPONSIVE HORIZON & SHIP
-  ───────────────────────── */
-
-  const horizonScene = document.getElementById("horizonScene");
-  const horizonLine = document.getElementById("horizonLine");
-  const horizonGlowLine = document.getElementById("horizonGlowLine");
-  const shipPosition = document.getElementById("shipPosition");
-  const shipTilt = document.getElementById("shipTilt");
-
-  function updateHorizon() {
-    const width = window.innerWidth;
-    const height = window.innerHeight;
-
-    horizonScene.setAttribute(
-      "viewBox",
-      `0 0 ${width} ${height}`
-    );
-
-    const y1 = height * 0.205;
-    const y2 = height * 0.795;
-
-    [horizonLine, horizonGlowLine].forEach(line => {
-      line.setAttribute("x1", 0);
-      line.setAttribute("y1", y1);
-      line.setAttribute("x2", width);
-      line.setAttribute("y2", y2);
-    });
-
-    const dx = width;
-    const dy = y2 - y1;
-
-    const angle = Math.atan2(dy, dx) * 180 / Math.PI;
-
-    const shipX = width * 0.27;
-    const shipY = y1 + dy * 0.27;
-
-    const shipScale = Math.min(
-      1,
-      Math.max(0.5, width / 1400)
-    );
-
-    shipPosition.setAttribute(
-      "transform",
-      `translate(${shipX} ${shipY})`
-    );
-
-    shipTilt.setAttribute(
-      "transform",
-      `rotate(${angle}) scale(${shipScale})`
-    );
-  }
-
-  window.addEventListener("resize", updateHorizon);
-  updateHorizon();
-
-  /* ─────────────────────────
-     PROFILE CONTENT
-  ───────────────────────── */
-
-  const characters = {
-    sun: {
-      name: "차태경",
-      english: "THE SUN",
-      quote: "태양은 바다 위에 떠 있었다.",
-      text: `
-        <p>오랫동안 늙지도, 죽지도 않았던 해적선의 선장.</p>
-        <p>태어날 때부터 태양의 힘을 지녔으며,
-        그 힘은 왼쪽 눈에 깃들어 있었다.</p>
-        <p>그러던 어느 날, 바닷속에서 올라온 손에
-        한쪽 눈을 빼앗겼다.</p>
-        <p>그날 이후로 하늘은 구름에 뒤덮였다.</p>
-      `
-    },
-
-    moon: {
-      name: "강지한",
-      english: "THE MOON",
-      quote: "달은 깊은 바다에 잠겨 있었다.",
-      text: `
-        <p>달의 힘을 담을 그릇으로 태어난 존재.</p>
-        <p>본래는 아무런 힘도 지니지 않았으나,
-        차태경의 눈을 먹은 뒤 변화가 시작되었다.</p>
-        <p>그의 안에서 태양의 힘은 달의 힘으로
-        바뀌었다.</p>
-        <p>머리 위 유인돌기 끝의 발광체에
-        그 힘이 깃들어 있다.</p>
-      `
-    }
-  };
-
-  function openProfile(type) {
-    const character = characters[type];
-
-    previousFocus = document.activeElement;
-
-    profile.classList.toggle(
-      "sun-profile",
-      type === "sun"
-    );
-
-    profileBody.innerHTML = `
-      <h2 class="profile-name" id="profileName">
-        ${character.name}
-      </h2>
-
-      <div class="profile-english">
-        ${character.english}
-      </div>
-
-      <div class="profile-rule"></div>
-
-      <div class="profile-text">
-        ${character.text}
-      </div>
-
-      <div class="profile-rule"></div>
-
-      <div class="profile-quote">
-        ${character.quote}
-      </div>
-    `;
-
-    profileBody.scrollTop = 0;
-
-    modal.classList.add("open");
-    modal.setAttribute("aria-hidden", "false");
-
-    closeProfileButton.focus();
-  }
-
-  function closeProfile() {
-    modal.classList.remove("open");
-    modal.setAttribute("aria-hidden", "true");
-
-    if (previousFocus && previousFocus.focus) {
-      previousFocus.focus();
-    }
-  }
-
-  sunButton.addEventListener("click", () => {
-    openProfile("sun");
-  });
-
-  moonButton.addEventListener("click", () => {
-    openProfile("moon");
-  });
-
-  closeProfileButton.addEventListener(
-    "click",
-    closeProfile
-  );
-
-  modal.addEventListener("click", (event) => {
-    if (event.target === modal) {
-      closeProfile();
-    }
-  });
-
-  document.addEventListener("keydown", (event) => {
-    if (!modal.classList.contains("open")) return;
-
-    if (event.key === "Escape") {
-      closeProfile();
-    }
-
-    if (event.key === "Tab") {
-      if (document.activeElement !== closeProfileButton) {
-        event.preventDefault();
-        closeProfileButton.focus();
-      }
-    }
-  });
+(()=>{
+ const world=document.getElementById('world');
+ const scene=document.getElementById('landscape');
+ const seaClipPath=document.getElementById('seaClipPath');
+ const horizon=document.getElementById('horizon');
+ const horizonGlow=document.getElementById('horizonGlow');
+ const shipPosition=document.getElementById('shipPosition');
+ const shipAngle=document.getElementById('shipAngle');
+ const shipScale=document.getElementById('shipScale');
+ const sunButton=document.getElementById('sunButton');
+ const moonButton=document.getElementById('moonButton');
+ const modal=document.getElementById('modal');
+ const heading=document.getElementById('profileHeading');
+ const name=document.getElementById('profileName');
+ const close=document.getElementById('closeProfile');
+ let lastFocus=null;
+ function layout(){
+  const w=world.clientWidth,h=world.clientHeight;
+  scene.setAttribute('viewBox',`0 0 ${w} ${h}`);
+  const y1=h*.205,y2=h*.795,dy=y2-y1;
+  const horizonPath=`M0 ${y1} L${w} ${y2}`;
+  horizon.setAttribute('d',horizonPath);horizonGlow.setAttribute('d',horizonPath);
+  seaClipPath.setAttribute('d',`${horizonPath} L${w} ${h} L0 ${h} Z`);
+  // Artwork is positioned in CSS pixel space, not stretched to the SVG's old viewBox.
+  const sunX=w*.75,sunY=h*.245;
+  const moonX=w*.23,moonY=h*.77;
+  const r=Math.max(27,Math.min(53,Math.min(w,h)*.075));
+  const moonR=r*1.05;
+  function circle(id,x,y,radius){const e=document.getElementById(id);e.setAttribute('cx',x);e.setAttribute('cy',y);e.setAttribute('r',radius)}
+  circle('sunDiscShape',sunX,sunY,r);circle('sunGlowRing',sunX,sunY,r+4);circle('sunAura',sunX,sunY,r*3.9);
+  circle('moonDiscShape',moonX,moonY,moonR);
+  const ma=document.getElementById('moonAura');ma.setAttribute('cx',moonX);ma.setAttribute('cy',moonY);ma.setAttribute('rx',moonR*3.4);ma.setAttribute('ry',moonR*3.4);
+  document.getElementById('moonCraters').setAttribute('transform',`translate(${moonX-232} ${moonY-540}) scale(${moonR/54}) translate(${232*(1-moonR/54)/(moonR/54)} ${540*(1-moonR/54)/(moonR/54)})`);
+  document.getElementById('moonOverlay').setAttribute('transform',`translate(${moonX-232} ${moonY-540})`);
+  world.style.setProperty('--sun-left',`${sunX-r}px`);world.style.setProperty('--sun-top',`${sunY-r}px`);world.style.setProperty('--sun-size',`${r*2}px`);
+  world.style.setProperty('--moon-left',`${moonX-moonR}px`);world.style.setProperty('--moon-top',`${moonY-moonR}px`);world.style.setProperty('--moon-size',`${moonR*2}px`);
+  const sx=w*.29,sy=y1+dy*.29;
+  const angle=Math.atan2(dy,w)*180/Math.PI;
+  const scale=Math.max(.42,Math.min(.88,Math.min(w/850,h/630)));
+  shipPosition.setAttribute('transform',`translate(${sx} ${sy})`);
+  shipAngle.setAttribute('transform',`rotate(${angle})`);
+  shipScale.setAttribute('transform',`scale(${scale})`);
+ }
+ // Original clouds and water lines use 1000x700 coordinates, so scale them as a unified texture layer.
+ // The foreground interactive objects and horizon are individually positioned above.
+ const clouds=[...scene.querySelectorAll('.cloud-float-a,.cloud-float-b')];
+ const waves=[...scene.querySelectorAll('.wave-shift')];
+ function adaptTextures(){const w=world.clientWidth,h=world.clientHeight;const scaleX=w/1000,scaleY=h/700;for(const el of [...clouds,...waves]){el.style.transformBox='view-box';el.style.transformOrigin='0 0';el.style.scale=`${scaleX} ${scaleY}`}}
+ function refresh(){layout();adaptTextures()}
+ window.addEventListener('resize',refresh);refresh();
+ function openProfile(type){lastFocus=document.activeElement;heading.textContent=type==='sun'?'선장님':'아귀인어';name.textContent=type==='sun'?'차태경':'강지한';modal.classList.add('open');modal.setAttribute('aria-hidden','false');close.focus()}
+ function closeProfile(){modal.classList.remove('open');modal.setAttribute('aria-hidden','true');lastFocus?.focus()}
+ sunButton.addEventListener('click',()=>openProfile('sun'));
+ moonButton.addEventListener('click',()=>openProfile('moon'));
+ close.addEventListener('click',closeProfile);
+ modal.addEventListener('click',e=>{if(e.target===modal)closeProfile()});
+ document.addEventListener('keydown',e=>{if(!modal.classList.contains('open'))return;if(e.key==='Escape')closeProfile();if(e.key==='Tab'){e.preventDefault();close.focus()}});
 })();
 </script>
-
 </body>
 </html>
