@@ -1,0 +1,1222 @@
+
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="theme-color" content="#101c29">
+<title>태양이 잠긴 바다</title>
+
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Noto+Serif+KR:wght@300;400;500;600&family=Cormorant+Garamond:wght@400;500;600&display=swap" rel="stylesheet">
+
+<style>
+:root {
+  --ink: #e5e8e8;
+  --muted: #a7b4bd;
+  --gold: #dfcba6;
+  --night: #0a1625;
+}
+
+* {
+  box-sizing: border-box;
+}
+
+html,
+body {
+  margin: 0;
+  width: 100%;
+  height: 100%;
+  overflow: hidden;
+}
+
+body {
+  font-family: "Noto Serif KR", serif;
+  background: #091625;
+  color: var(--ink);
+}
+
+button {
+  font: inherit;
+}
+
+button:focus-visible {
+  outline: 1px solid #f0dfb9;
+  outline-offset: 5px;
+}
+
+/* ─────────────────────────
+   MAIN SCENE
+───────────────────────── */
+
+.world {
+  position: relative;
+  width: 100%;
+  height: 100vh;
+  height: 100svh;
+  overflow: hidden;
+  isolation: isolate;
+
+  background:
+    radial-gradient(
+      ellipse at 72% 35%,
+      rgba(174,177,164,.17),
+      transparent 45%
+    ),
+    linear-gradient(
+      160deg,
+      #263a4b 0%,
+      #4a5d6c 37%,
+      #77858b 70%,
+      #a4a19a 100%
+    );
+}
+
+.world::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  z-index: 17;
+  pointer-events: none;
+  opacity: .11;
+  background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 180 180' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.85' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='.45'/%3E%3C/svg%3E");
+  mix-blend-mode: soft-light;
+}
+
+/* ─────────────────────────
+   CLOUDS
+───────────────────────── */
+
+.cloud-field {
+  position: absolute;
+  inset: -15%;
+  z-index: 1;
+  pointer-events: none;
+  overflow: hidden;
+}
+
+.cloud {
+  position: absolute;
+  width: 72vw;
+  height: 24vh;
+  min-height: 120px;
+  border-radius: 50%;
+  filter: blur(32px);
+  opacity: .65;
+  animation: cloudDrift 55s ease-in-out infinite alternate;
+}
+
+.cloud.one {
+  top: 4%;
+  left: -16%;
+  background: radial-gradient(
+    ellipse,
+    rgba(25,41,57,.9),
+    rgba(41,56,69,.55) 55%,
+    transparent 75%
+  );
+}
+
+.cloud.two {
+  top: 7%;
+  right: -27%;
+  width: 90vw;
+  height: 30vh;
+  background: radial-gradient(
+    ellipse,
+    rgba(177,185,185,.65),
+    rgba(113,130,139,.45) 53%,
+    transparent 75%
+  );
+  animation-duration: 75s;
+  animation-direction: alternate-reverse;
+}
+
+.cloud.three {
+  top: 30%;
+  left: 8%;
+  width: 65vw;
+  height: 16vh;
+  background: radial-gradient(
+    ellipse,
+    rgba(31,47,60,.62),
+    rgba(65,82,93,.3) 55%,
+    transparent 78%
+  );
+  animation-duration: 67s;
+}
+
+.cloud.four {
+  top: -10%;
+  left: 24%;
+  width: 110vw;
+  height: 22vh;
+  background: radial-gradient(
+    ellipse,
+    rgba(22,36,48,.8),
+    rgba(45,62,76,.4) 60%,
+    transparent 78%
+  );
+  animation-duration: 85s;
+}
+
+.cloud.five {
+  top: 42%;
+  right: -15%;
+  width: 70vw;
+  height: 14vh;
+  background: radial-gradient(
+    ellipse,
+    rgba(190,189,178,.34),
+    transparent 70%
+  );
+  animation-duration: 63s;
+}
+
+@keyframes cloudDrift {
+  from {
+    transform: translateX(-4%) scale(1);
+  }
+  to {
+    transform: translateX(7%) scale(1.08);
+  }
+}
+
+/* ─────────────────────────
+   SUN
+───────────────────────── */
+
+.sun-area {
+  position: absolute;
+  z-index: 3;
+  top: 20%;
+  right: 20%;
+  width: clamp(115px, 17vw, 230px);
+  aspect-ratio: 1;
+  display: grid;
+  place-items: center;
+  border: none;
+  background: transparent;
+  padding: 0;
+  cursor: pointer;
+  -webkit-tap-highlight-color: transparent;
+}
+
+.sun-aura {
+  position: absolute;
+  inset: -70%;
+  border-radius: 50%;
+  background: radial-gradient(
+    circle,
+    rgba(247,223,167,.2) 0%,
+    rgba(236,213,166,.13) 21%,
+    rgba(233,208,169,.055) 43%,
+    transparent 67%
+  );
+  animation: sunBreathe 9s ease-in-out infinite alternate;
+}
+
+.sun-ring {
+  position: absolute;
+  width: 82%;
+  height: 82%;
+  border-radius: 50%;
+  border: 1px solid rgba(245,225,185,.12);
+  box-shadow:
+    0 0 28px rgba(255,225,172,.13),
+    inset 0 0 25px rgba(255,229,180,.06);
+}
+
+.sun-core {
+  position: relative;
+  width: 60%;
+  aspect-ratio: 1;
+  border-radius: 50%;
+  background: radial-gradient(
+    circle at 45% 40%,
+    #f7ecd3 0%,
+    #ead8b1 46%,
+    #b6ad9d 100%
+  );
+  box-shadow:
+    0 0 22px rgba(252,230,187,.38),
+    0 0 65px rgba(242,214,166,.2),
+    0 0 130px rgba(236,203,155,.15);
+  opacity: .89;
+  transition:
+    transform .8s,
+    box-shadow .8s;
+}
+
+.sun-area:hover .sun-core {
+  transform: scale(1.07);
+  box-shadow:
+    0 0 35px rgba(255,232,191,.55),
+    0 0 90px rgba(242,214,166,.3);
+}
+
+@keyframes sunBreathe {
+  from {
+    transform: scale(.95);
+    opacity: .7;
+  }
+  to {
+    transform: scale(1.09);
+    opacity: 1;
+  }
+}
+
+.sun-veil {
+  position: absolute;
+  z-index: 4;
+  top: 20%;
+  right: 3%;
+  width: 50%;
+  height: 16%;
+  border-radius: 50%;
+  background: radial-gradient(
+    ellipse,
+    rgba(79,96,108,.29),
+    rgba(112,125,128,.14) 55%,
+    transparent 75%
+  );
+  filter: blur(22px);
+  pointer-events: none;
+  animation: veilMove 36s ease-in-out infinite alternate;
+}
+
+@keyframes veilMove {
+  to {
+    transform: translateX(-18%);
+  }
+}
+
+/* ─────────────────────────
+   DIAGONAL SEA
+───────────────────────── */
+
+.sea {
+  position: absolute;
+  z-index: 5;
+  inset: 0;
+  overflow: hidden;
+
+  clip-path: polygon(
+    0 20.5%,
+    100% 79.5%,
+    100% 100%,
+    0 100%
+  );
+
+  background:
+    radial-gradient(
+      ellipse at 23% 71%,
+      rgba(65,102,124,.32),
+      transparent 43%
+    ),
+    linear-gradient(
+      145deg,
+      #29485c 0%,
+      #1a3349 35%,
+      #0c2033 67%,
+      #071524 100%
+    );
+}
+
+.sea-glow {
+  position: absolute;
+  inset: 0;
+  background: radial-gradient(
+    ellipse 45% 55% at 24% 69%,
+    rgba(164,193,213,.13),
+    transparent 75%
+  );
+  animation: seaLight 12s ease-in-out infinite alternate;
+}
+
+@keyframes seaLight {
+  from {
+    opacity: .65;
+  }
+  to {
+    opacity: 1;
+  }
+}
+
+.water-lines {
+  position: absolute;
+  inset: 0;
+  opacity: .38;
+  background: repeating-linear-gradient(
+    174deg,
+    transparent 0,
+    transparent 22px,
+    rgba(182,208,220,.055) 23px,
+    transparent 25px,
+    transparent 53px
+  );
+  animation: waterDrift 19s linear infinite alternate;
+}
+
+.water-lines.second {
+  opacity: .2;
+  transform: scale(1.2);
+  animation-duration: 28s;
+  animation-direction: alternate-reverse;
+}
+
+@keyframes waterDrift {
+  to {
+    background-position: 85px 48px;
+  }
+}
+
+/* ─────────────────────────
+   MOON
+───────────────────────── */
+
+.moon-area {
+  position: absolute;
+  z-index: 8;
+  left: 15%;
+  top: 61%;
+  width: clamp(100px, 14vw, 190px);
+  aspect-ratio: 1;
+  display: grid;
+  place-items: center;
+  border: 0;
+  padding: 0;
+  background: transparent;
+  cursor: pointer;
+  -webkit-tap-highlight-color: transparent;
+}
+
+.moon-halo {
+  position: absolute;
+  inset: -75%;
+  border-radius: 50%;
+  background: radial-gradient(
+    circle,
+    rgba(192,220,240,.17),
+    rgba(147,181,211,.075) 31%,
+    transparent 65%
+  );
+  animation: moonPulse 10s ease-in-out infinite alternate;
+}
+
+.moon-core {
+  position: relative;
+  width: 78%;
+  aspect-ratio: 1;
+  border-radius: 50%;
+  overflow: hidden;
+  background:
+    radial-gradient(
+      circle at 32% 31%,
+      rgba(169,181,195,.24) 0 8%,
+      transparent 10%
+    ),
+    radial-gradient(
+      circle at 67% 64%,
+      rgba(134,153,176,.19) 0 13%,
+      transparent 15%
+    ),
+    radial-gradient(
+      circle at 68% 27%,
+      rgba(137,155,176,.16) 0 7%,
+      transparent 9%
+    ),
+    radial-gradient(
+      circle at 43% 72%,
+      rgba(146,164,187,.14) 0 10%,
+      transparent 12%
+    ),
+    radial-gradient(
+      circle at 40% 35%,
+      #f1f4ef,
+      #cbd8e3 55%,
+      #91a9bd 100%
+    );
+
+  box-shadow:
+    0 0 24px rgba(201,226,247,.36),
+    0 0 75px rgba(153,197,230,.17),
+    0 0 130px rgba(132,185,226,.09);
+
+  transition: transform .8s;
+}
+
+.moon-core::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  border-radius: inherit;
+  background: linear-gradient(
+    165deg,
+    rgba(10,39,65,.04),
+    rgba(13,51,79,.29)
+  );
+}
+
+.moon-area:hover .moon-core {
+  transform: scale(1.07);
+}
+
+@keyframes moonPulse {
+  from {
+    opacity: .65;
+    transform: scale(.94);
+  }
+  to {
+    opacity: 1;
+    transform: scale(1.07);
+  }
+}
+
+.moon-ripples {
+  position: absolute;
+  z-index: 7;
+  left: 11%;
+  top: 80%;
+  width: 25%;
+  height: 12%;
+  pointer-events: none;
+}
+
+.moon-ripples span {
+  display: block;
+  height: 1px;
+  margin: 13px auto;
+  border-radius: 50%;
+  background: linear-gradient(
+    90deg,
+    transparent,
+    rgba(188,219,239,.32),
+    transparent
+  );
+  animation: rippleShimmer 6s ease-in-out infinite alternate;
+}
+
+.moon-ripples span:nth-child(1) {
+  width: 70%;
+}
+
+.moon-ripples span:nth-child(2) {
+  width: 48%;
+  animation-delay: 1s;
+}
+
+.moon-ripples span:nth-child(3) {
+  width: 85%;
+  animation-delay: 2s;
+}
+
+@keyframes rippleShimmer {
+  from {
+    opacity: .3;
+    transform: translateX(-9px);
+  }
+  to {
+    opacity: .9;
+    transform: translateX(9px);
+  }
+}
+
+/* ─────────────────────────
+   HORIZON & SHIP
+   SVG coordinates stay aligned
+───────────────────────── */
+
+.horizon-scene {
+  position: absolute;
+  z-index: 10;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  pointer-events: none;
+  overflow: visible;
+}
+
+.horizon-line {
+  stroke: rgba(207,220,221,.7);
+  stroke-width: 1.2;
+  filter: drop-shadow(0 0 5px rgba(190,213,219,.45));
+}
+
+.ship-group {
+  transform-origin: 0 0;
+  animation: shipRock 9s ease-in-out infinite alternate;
+}
+
+@keyframes shipRock {
+  from {
+    transform: rotate(-.5deg);
+  }
+  to {
+    transform: rotate(.5deg);
+  }
+}
+
+/* ─────────────────────────
+   TITLE
+───────────────────────── */
+
+.title-wrap {
+  position: absolute;
+  z-index: 12;
+  top: 9%;
+  left: 50%;
+  width: 90%;
+  transform: translateX(-50%);
+  text-align: center;
+  pointer-events: none;
+}
+
+.main-title {
+  margin: 0;
+  font-size: clamp(23px, 3.4vw, 43px);
+  font-weight: 300;
+  letter-spacing: .26em;
+  text-indent: .26em;
+  color: #edf0ec;
+  text-shadow:
+    0 2px 12px rgba(4,15,27,.4),
+    0 0 30px rgba(226,233,229,.14);
+}
+
+.eng-title {
+  display: block;
+  margin-top: 13px;
+  font-family: "Cormorant Garamond", serif;
+  font-size: clamp(10px, 1.3vw, 14px);
+  font-weight: 400;
+  letter-spacing: .3em;
+  color: #d4d9d6;
+}
+
+.vignette {
+  position: absolute;
+  z-index: 11;
+  inset: 0;
+  background: radial-gradient(
+    ellipse at 50% 46%,
+    transparent 38%,
+    rgba(4,12,24,.16) 72%,
+    rgba(4,11,22,.4) 100%
+  );
+  pointer-events: none;
+}
+
+/* ─────────────────────────
+   PROFILE MODAL
+───────────────────────── */
+
+.modal {
+  position: absolute;
+  z-index: 30;
+  inset: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 22px;
+  background: rgba(4,13,25,.58);
+  backdrop-filter: blur(9px);
+  opacity: 0;
+  visibility: hidden;
+  pointer-events: none;
+  transition:
+    opacity .7s ease,
+    visibility .7s ease;
+}
+
+.modal.open {
+  opacity: 1;
+  visibility: visible;
+  pointer-events: auto;
+}
+
+.profile {
+  position: relative;
+  width: min(410px, 100%);
+  max-height: min(75svh, 620px);
+  overflow: hidden;
+  display: flex;
+  flex-direction: column;
+  border: 1px solid rgba(214,225,230,.24);
+  background: linear-gradient(
+    150deg,
+    rgba(35,54,70,.96),
+    rgba(13,29,44,.97)
+  );
+  box-shadow: 0 25px 90px rgba(0,0,0,.36);
+  transform: translateY(18px) scale(.98);
+  transition: transform .7s ease;
+}
+
+.modal.open .profile {
+  transform: translateY(0) scale(1);
+}
+
+.profile.sun-profile {
+  background: linear-gradient(
+    150deg,
+    rgba(65,72,74,.97),
+    rgba(30,42,51,.98)
+  );
+}
+
+.profile-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 17px 22px;
+  border-bottom: 1px solid rgba(214,225,230,.14);
+}
+
+.profile-label {
+  font-family: "Cormorant Garamond", serif;
+  font-size: 12px;
+  letter-spacing: .25em;
+  color: #b9c7ce;
+}
+
+.close-profile {
+  border: none;
+  background: transparent;
+  color: #dce4e5;
+  font-size: 25px;
+  line-height: 1;
+  cursor: pointer;
+}
+
+.profile-body {
+  padding: 29px 30px 34px;
+  overflow-y: auto;
+  overscroll-behavior: contain;
+  scrollbar-width: thin;
+  scrollbar-color: #526677 transparent;
+}
+
+.profile-name {
+  margin: 0;
+  font-size: 29px;
+  font-weight: 300;
+  letter-spacing: .12em;
+}
+
+.profile-english {
+  margin: 9px 0 28px;
+  font-family: "Cormorant Garamond", serif;
+  font-size: 14px;
+  letter-spacing: .2em;
+  color: #a8b9c5;
+}
+
+.profile-rule {
+  width: 35px;
+  height: 1px;
+  margin: 25px 0;
+  background: rgba(215,226,230,.48);
+}
+
+.profile-text {
+  font-size: 12px;
+  font-weight: 300;
+  line-height: 2.3;
+  color: #d6dfe2;
+  word-break: keep-all;
+}
+
+.profile-text p {
+  margin: 0 0 15px;
+}
+
+.profile-quote {
+  margin-top: 30px;
+  color: #e4d7bc;
+  font-size: 13px;
+  line-height: 2;
+}
+
+/* ─────────────────────────
+   MOBILE
+───────────────────────── */
+
+@media (max-width: 650px) {
+  .title-wrap {
+    top: 11%;
+  }
+
+  .main-title {
+    letter-spacing: .19em;
+    text-indent: .19em;
+  }
+
+  .sun-area {
+    top: 26%;
+    right: 11%;
+    width: 135px;
+  }
+
+  .moon-area {
+    top: 64%;
+    left: 8%;
+    width: 115px;
+  }
+
+  .cloud {
+    filter: blur(23px);
+  }
+
+  .profile-body {
+    padding: 23px 24px 28px;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: .01ms !important;
+    transition-duration: .01ms !important;
+  }
+}
+</style>
+</head>
+
+<body>
+
+<main class="world" id="world">
+
+  <!-- CLOUDS -->
+
+  <div class="cloud-field" aria-hidden="true">
+    <div class="cloud one"></div>
+    <div class="cloud two"></div>
+    <div class="cloud three"></div>
+    <div class="cloud four"></div>
+    <div class="cloud five"></div>
+  </div>
+
+  <!-- SUN / CHA TAEGYEONG -->
+
+  <button
+    class="sun-area"
+    id="sunButton"
+    type="button"
+    aria-label="차태경 프로필 열기"
+  >
+    <span class="sun-aura"></span>
+    <span class="sun-ring"></span>
+    <span class="sun-core"></span>
+  </button>
+
+  <div class="sun-veil" aria-hidden="true"></div>
+
+  <!-- SEA -->
+
+  <div class="sea" aria-hidden="true">
+    <div class="sea-glow"></div>
+    <div class="water-lines"></div>
+    <div class="water-lines second"></div>
+  </div>
+
+  <!-- MOON / KANG JIHAN -->
+
+  <button
+    class="moon-area"
+    id="moonButton"
+    type="button"
+    aria-label="강지한 프로필 열기"
+  >
+    <span class="moon-halo"></span>
+    <span class="moon-core"></span>
+  </button>
+
+  <div class="moon-ripples" aria-hidden="true">
+    <span></span>
+    <span></span>
+    <span></span>
+  </div>
+
+  <!-- HORIZON & PIRATE SHIP -->
+
+  <svg
+    class="horizon-scene"
+    id="horizonScene"
+    xmlns="http://www.w3.org/2000/svg"
+    aria-hidden="true"
+    preserveAspectRatio="none"
+  >
+    <defs>
+      <filter id="horizonGlow">
+        <feGaussianBlur stdDeviation="3"/>
+      </filter>
+    </defs>
+
+    <line
+      id="horizonGlowLine"
+      stroke="rgba(193,215,222,.23)"
+      stroke-width="7"
+      filter="url(#horizonGlow)"
+    />
+
+    <line
+      id="horizonLine"
+      class="horizon-line"
+    />
+
+    <g id="shipPosition">
+      <g id="shipTilt">
+        <g class="ship-group">
+          <g
+            fill="#101d2a"
+            stroke="#101d2a"
+            stroke-width="1.7"
+            stroke-linejoin="round"
+            stroke-linecap="round"
+          >
+            <!-- hull -->
+            <path d="
+              M-72 -17
+              L72 -17
+              L55 0
+              L-53 0
+              Z
+            "/>
+
+            <!-- deck -->
+            <path
+              d="M-61 -21 H65"
+              fill="none"
+              stroke-width="3"
+            />
+
+            <!-- masts -->
+            <path
+              d="
+                M-10 -111 V-21
+                M33 -88 V-21
+                M-42 -65 V-21
+              "
+              fill="none"
+              stroke-width="2.7"
+            />
+
+            <!-- main sails -->
+            <path d="
+              M-15 -106
+              Q-35 -78 -17 -30
+              L-15 -30
+              Z
+            "/>
+
+            <path d="
+              M-5 -107
+              Q33 -74 -3 -30
+              L-5 -30
+              Z
+            "/>
+
+            <!-- second sails -->
+            <path d="
+              M29 -85
+              Q10 -63 29 -34
+              Z
+            "/>
+
+            <path d="
+              M37 -84
+              Q63 -62 37 -34
+              Z
+            "/>
+
+            <!-- forward sail -->
+            <path d="
+              M-44 -62
+              Q-62 -42 -44 -25
+              Z
+            "/>
+
+            <!-- rigging -->
+            <path
+              d="
+                M-10 -111 L-61 -21
+                M-10 -111 L68 -21
+                M33 -88 L71 -21
+              "
+              fill="none"
+              stroke-width="1"
+              opacity=".7"
+            />
+
+            <!-- flag -->
+            <path d="
+              M-10 -111
+              L12 -107
+              L-10 -101
+              Z
+            "/>
+
+            <!-- stern -->
+            <path
+              d="
+                M45 -27
+                L45 -36
+                L63 -36
+                L63 -19
+              "
+              fill="none"
+            />
+
+            <!-- small windows -->
+            <g
+              fill="#b7a88b"
+              stroke="none"
+              opacity=".55"
+            >
+              <circle cx="-28" cy="-11" r="2"/>
+              <circle cx="-2" cy="-11" r="2"/>
+              <circle cx="24" cy="-11" r="2"/>
+            </g>
+          </g>
+        </g>
+      </g>
+    </g>
+  </svg>
+
+  <!-- TITLE -->
+
+  <header class="title-wrap">
+    <h1 class="main-title">태양이 잠긴 바다</h1>
+    <span class="eng-title">
+      THE SEA WHERE THE SUN SANK
+    </span>
+  </header>
+
+  <div class="vignette"></div>
+
+  <!-- CHARACTER PROFILE -->
+
+  <div
+    class="modal"
+    id="modal"
+    aria-hidden="true"
+  >
+    <section
+      class="profile"
+      id="profile"
+      role="dialog"
+      aria-modal="true"
+      aria-labelledby="profileName"
+    >
+      <div class="profile-header">
+        <span class="profile-label">
+          THE SEA WHERE THE SUN SANK
+        </span>
+
+        <button
+          class="close-profile"
+          id="closeProfile"
+          type="button"
+          aria-label="프로필 닫기"
+        >×</button>
+      </div>
+
+      <div class="profile-body" id="profileBody"></div>
+    </section>
+  </div>
+
+</main>
+
+<script>
+(() => {
+  const modal = document.getElementById("modal");
+  const profile = document.getElementById("profile");
+  const profileBody = document.getElementById("profileBody");
+  const closeProfileButton = document.getElementById("closeProfile");
+
+  const sunButton = document.getElementById("sunButton");
+  const moonButton = document.getElementById("moonButton");
+
+  let previousFocus = null;
+
+  /* ─────────────────────────
+     RESPONSIVE HORIZON & SHIP
+  ───────────────────────── */
+
+  const horizonScene = document.getElementById("horizonScene");
+  const horizonLine = document.getElementById("horizonLine");
+  const horizonGlowLine = document.getElementById("horizonGlowLine");
+  const shipPosition = document.getElementById("shipPosition");
+  const shipTilt = document.getElementById("shipTilt");
+
+  function updateHorizon() {
+    const width = window.innerWidth;
+    const height = window.innerHeight;
+
+    horizonScene.setAttribute(
+      "viewBox",
+      `0 0 ${width} ${height}`
+    );
+
+    const y1 = height * 0.205;
+    const y2 = height * 0.795;
+
+    [horizonLine, horizonGlowLine].forEach(line => {
+      line.setAttribute("x1", 0);
+      line.setAttribute("y1", y1);
+      line.setAttribute("x2", width);
+      line.setAttribute("y2", y2);
+    });
+
+    const dx = width;
+    const dy = y2 - y1;
+
+    const angle = Math.atan2(dy, dx) * 180 / Math.PI;
+
+    const shipX = width * 0.27;
+    const shipY = y1 + dy * 0.27;
+
+    const shipScale = Math.min(
+      1,
+      Math.max(0.5, width / 1400)
+    );
+
+    shipPosition.setAttribute(
+      "transform",
+      `translate(${shipX} ${shipY})`
+    );
+
+    shipTilt.setAttribute(
+      "transform",
+      `rotate(${angle}) scale(${shipScale})`
+    );
+  }
+
+  window.addEventListener("resize", updateHorizon);
+  updateHorizon();
+
+  /* ─────────────────────────
+     PROFILE CONTENT
+  ───────────────────────── */
+
+  const characters = {
+    sun: {
+      name: "차태경",
+      english: "THE SUN",
+      quote: "태양은 바다 위에 떠 있었다.",
+      text: `
+        <p>오랫동안 늙지도, 죽지도 않았던 해적선의 선장.</p>
+        <p>태어날 때부터 태양의 힘을 지녔으며,
+        그 힘은 왼쪽 눈에 깃들어 있었다.</p>
+        <p>그러던 어느 날, 바닷속에서 올라온 손에
+        한쪽 눈을 빼앗겼다.</p>
+        <p>그날 이후로 하늘은 구름에 뒤덮였다.</p>
+      `
+    },
+
+    moon: {
+      name: "강지한",
+      english: "THE MOON",
+      quote: "달은 깊은 바다에 잠겨 있었다.",
+      text: `
+        <p>달의 힘을 담을 그릇으로 태어난 존재.</p>
+        <p>본래는 아무런 힘도 지니지 않았으나,
+        차태경의 눈을 먹은 뒤 변화가 시작되었다.</p>
+        <p>그의 안에서 태양의 힘은 달의 힘으로
+        바뀌었다.</p>
+        <p>머리 위 유인돌기 끝의 발광체에
+        그 힘이 깃들어 있다.</p>
+      `
+    }
+  };
+
+  function openProfile(type) {
+    const character = characters[type];
+
+    previousFocus = document.activeElement;
+
+    profile.classList.toggle(
+      "sun-profile",
+      type === "sun"
+    );
+
+    profileBody.innerHTML = `
+      <h2 class="profile-name" id="profileName">
+        ${character.name}
+      </h2>
+
+      <div class="profile-english">
+        ${character.english}
+      </div>
+
+      <div class="profile-rule"></div>
+
+      <div class="profile-text">
+        ${character.text}
+      </div>
+
+      <div class="profile-rule"></div>
+
+      <div class="profile-quote">
+        ${character.quote}
+      </div>
+    `;
+
+    profileBody.scrollTop = 0;
+
+    modal.classList.add("open");
+    modal.setAttribute("aria-hidden", "false");
+
+    closeProfileButton.focus();
+  }
+
+  function closeProfile() {
+    modal.classList.remove("open");
+    modal.setAttribute("aria-hidden", "true");
+
+    if (previousFocus && previousFocus.focus) {
+      previousFocus.focus();
+    }
+  }
+
+  sunButton.addEventListener("click", () => {
+    openProfile("sun");
+  });
+
+  moonButton.addEventListener("click", () => {
+    openProfile("moon");
+  });
+
+  closeProfileButton.addEventListener(
+    "click",
+    closeProfile
+  );
+
+  modal.addEventListener("click", (event) => {
+    if (event.target === modal) {
+      closeProfile();
+    }
+  });
+
+  document.addEventListener("keydown", (event) => {
+    if (!modal.classList.contains("open")) return;
+
+    if (event.key === "Escape") {
+      closeProfile();
+    }
+
+    if (event.key === "Tab") {
+      if (document.activeElement !== closeProfileButton) {
+        event.preventDefault();
+        closeProfileButton.focus();
+      }
+    }
+  });
+})();
+</script>
+
+</body>
+</html>
