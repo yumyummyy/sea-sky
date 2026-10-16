@@ -43,7 +43,9 @@ button {
   background: #293f50;
 }
 
-/* 전체 풍경 */
+/* ─────────────────────────
+   전체 풍경
+───────────────────────── */
 
 .landscape {
   position: absolute;
@@ -54,7 +56,9 @@ button {
   pointer-events: none;
 }
 
-/* 해와 달 클릭 영역 */
+/* ─────────────────────────
+   해와 달 클릭 영역
+───────────────────────── */
 
 .celestial {
   position: absolute;
@@ -104,12 +108,14 @@ button {
   height: var(--moon-size);
 }
 
-/* 제목 */
+/* ─────────────────────────
+   제목
+───────────────────────── */
 
 .scene-title {
   position: absolute;
   z-index: 12;
-  top: 7%;
+  top: 8%;
   left: 0;
   width: 100%;
   padding: 0 15px;
@@ -117,7 +123,7 @@ button {
   text-align: center;
   pointer-events: none;
 
-  font-size: clamp(23px, 3.1vw, 43px);
+  font-size: clamp(18px, 2.4vw, 32px);
   font-weight: 300;
   letter-spacing: .25em;
   text-indent: .25em;
@@ -126,7 +132,9 @@ button {
   text-shadow: 0 2px 15px rgba(18,37,54,.7);
 }
 
-/* 움직임 */
+/* ─────────────────────────
+   풍경 애니메이션
+───────────────────────── */
 
 .cloud-float-a {
   animation: driftA 45s ease-in-out infinite alternate;
@@ -136,8 +144,12 @@ button {
   animation: driftB 60s ease-in-out infinite alternate;
 }
 
-.light-breathe {
-  animation: glow 8s ease-in-out infinite alternate;
+.sun-glow {
+  animation: sunGlow 10s ease-in-out infinite alternate;
+}
+
+.moon-glow {
+  animation: moonGlow 12s ease-in-out infinite alternate;
 }
 
 .ship-sway {
@@ -156,9 +168,14 @@ button {
   to { transform: translateX(-44px); }
 }
 
-@keyframes glow {
-  from { opacity: 1; }
-  to { opacity: .82; }
+@keyframes sunGlow {
+  from { opacity: .72; }
+  to { opacity: 1; }
+}
+
+@keyframes moonGlow {
+  from { opacity: .65; }
+  to { opacity: 1; }
 }
 
 @keyframes sway {
@@ -166,7 +183,9 @@ button {
   to { transform: rotate(.5deg); }
 }
 
-/* 설명창 */
+/* ─────────────────────────
+   설명창 공통
+───────────────────────── */
 
 .modal {
   position: fixed;
@@ -178,14 +197,16 @@ button {
   justify-content: center;
   padding: 20px;
 
-  background: rgba(5,14,26,.66);
+  background: rgba(5,14,26,.7);
   backdrop-filter: blur(9px);
 
   opacity: 0;
   visibility: hidden;
   pointer-events: none;
 
-  transition: opacity .35s, visibility .35s;
+  transition:
+    opacity .4s ease,
+    visibility .4s ease;
 }
 
 .modal.open {
@@ -195,68 +216,203 @@ button {
 }
 
 .profile {
-  width: min(370px, 100%);
-  border: 1px solid rgba(226,235,236,.35);
-  background: linear-gradient(150deg, #2c4050, #102131);
-  box-shadow: 0 18px 65px rgba(6,18,30,.6);
+  position: relative;
+  width: min(390px, 100%);
+  overflow: hidden;
 
-  transform: translateY(12px);
-  transition: transform .35s;
+  border: 1px solid rgba(226,235,236,.23);
+  background: #142636;
+  box-shadow: 0 22px 70px rgba(4,12,23,.55);
+
+  transform: translateY(14px);
+  transition: transform .4s ease;
 }
 
 .modal.open .profile {
   transform: translateY(0);
 }
 
+/* 선장님 창 */
+
+.profile.sun-profile {
+  border-color: rgba(206,195,169,.3);
+
+  background:
+    radial-gradient(
+      ellipse at 100% 0%,
+      rgba(153,133,101,.12),
+      transparent 60%
+    ),
+    linear-gradient(
+      155deg,
+      #303b43,
+      #172632 80%
+    );
+}
+
+/* 아귀인어 창 */
+
+.profile.moon-profile {
+  border-color: rgba(157,193,213,.27);
+
+  background:
+    radial-gradient(
+      ellipse at 0% 100%,
+      rgba(78,133,167,.16),
+      transparent 65%
+    ),
+    linear-gradient(
+      155deg,
+      #1d3547,
+      #0b1e30 85%
+    );
+}
+
+/* 설명창 상단 */
+
 .profile-header {
+  position: relative;
   display: flex;
   align-items: center;
   justify-content: space-between;
-  padding: 17px 23px;
-  border-bottom: 1px solid rgba(213,224,224,.2);
+  padding: 18px 24px;
+
+  border-bottom: 1px solid rgba(213,224,224,.16);
 }
 
 .profile-heading {
   margin: 0;
-  font-size: 16px;
+  font-size: 13px;
   font-weight: 400;
-  letter-spacing: .16em;
+  letter-spacing: .18em;
+  color: #dce5e7;
+}
+
+.sun-profile .profile-heading {
+  color: #ded0b7;
+}
+
+.moon-profile .profile-heading {
+  color: #b9d6e7;
 }
 
 .close-profile {
   padding: 0;
   border: none;
   background: transparent;
-  color: #e9eeef;
-  font-size: 27px;
+  color: #dce4e5;
+  font-size: 26px;
   line-height: 1;
   cursor: pointer;
 }
 
+/* 설명창 본문 */
+
 .profile-body {
-  min-height: 125px;
-  display: grid;
-  place-items: center;
-  padding: 32px;
+  position: relative;
+  padding: 35px 30px 42px;
+  text-align: left;
 }
 
 .profile-name {
   margin: 0;
-  font-size: 28px;
+  font-size: 27px;
   font-weight: 300;
-  letter-spacing: .16em;
+  letter-spacing: .13em;
+  color: #edf0ee;
 }
+
+.profile-description {
+  margin: 17px 0 0;
+  font-size: 12px;
+  font-weight: 300;
+  line-height: 2;
+  letter-spacing: .025em;
+  color: #bdc9cf;
+  word-break: keep-all;
+}
+
+.sun-profile .profile-description {
+  color: #c9c2b6;
+}
+
+.moon-profile .profile-description {
+  color: #b5cad8;
+}
+
+/* 이름 아래 작은 장식 */
+
+.profile-accent {
+  width: 34px;
+  height: 1px;
+  margin-top: 26px;
+  opacity: .75;
+}
+
+.sun-profile .profile-accent {
+  background: linear-gradient(
+    90deg,
+    #d9c5a1,
+    transparent
+  );
+}
+
+.moon-profile .profile-accent {
+  background: linear-gradient(
+    90deg,
+    #a6cde3,
+    transparent
+  );
+}
+
+/* 창 내부의 은은한 장식 */
+
+.profile-decoration {
+  position: absolute;
+  right: 27px;
+  top: 29px;
+  width: 58px;
+  height: 58px;
+  border-radius: 50%;
+  pointer-events: none;
+}
+
+.sun-profile .profile-decoration {
+  border: 1px solid rgba(224,204,163,.13);
+  box-shadow:
+    0 0 25px rgba(215,188,138,.07),
+    inset 0 0 20px rgba(215,188,138,.04);
+}
+
+.moon-profile .profile-decoration {
+  border: 1px solid rgba(180,218,240,.12);
+  box-shadow:
+    0 0 27px rgba(134,189,225,.09),
+    inset 0 0 20px rgba(134,189,225,.04);
+}
+
+/* ─────────────────────────
+   모바일
+───────────────────────── */
 
 @media (max-width: 600px) {
   .scene-title {
     top: 10%;
-    font-size: clamp(22px, 5.4vw, 31px);
+    font-size: clamp(18px, 4.4vw, 25px);
     letter-spacing: .17em;
     text-indent: .17em;
   }
 
   .profile {
-    width: min(340px, 100%);
+    width: min(350px, 100%);
+  }
+
+  .profile-body {
+    padding: 30px 26px 37px;
+  }
+
+  .profile-name {
+    font-size: 25px;
   }
 }
 
@@ -304,22 +460,6 @@ button {
     <stop offset="1" stop-color="#071b30"/>
   </linearGradient>
 
-  <!-- 태양빛 -->
-
-  <radialGradient id="sunLight">
-    <stop offset="0" stop-color="#fff4d5" stop-opacity=".6"/>
-    <stop offset=".3" stop-color="#ffe6ac" stop-opacity=".23"/>
-    <stop offset="1" stop-color="#ffedcc" stop-opacity="0"/>
-  </radialGradient>
-
-  <!-- 달빛 -->
-
-  <radialGradient id="moonLight">
-    <stop offset="0" stop-color="#e5f7ff" stop-opacity=".42"/>
-    <stop offset=".32" stop-color="#a6d5f2" stop-opacity=".16"/>
-    <stop offset="1" stop-color="#a6d5f2" stop-opacity="0"/>
-  </radialGradient>
-
   <!-- 태양 본체 -->
 
   <radialGradient id="sunDisc" cx="38%" cy="30%">
@@ -328,7 +468,7 @@ button {
     <stop offset="1" stop-color="#d8bf8f"/>
   </radialGradient>
 
-  <!-- 달 본체 : 점박이 없는 매끈한 보름달 -->
+  <!-- 달 본체 -->
 
   <radialGradient id="moonDisc" cx="35%" cy="30%">
     <stop offset="0" stop-color="#ffffff"/>
@@ -336,7 +476,25 @@ button {
     <stop offset="1" stop-color="#abc5d8"/>
   </radialGradient>
 
-  <!-- 구름용 흐림 효과 -->
+  <!-- 태양의 은은한 빛 -->
+
+  <radialGradient id="sunHalo">
+    <stop offset="0" stop-color="#fff0c7" stop-opacity=".38"/>
+    <stop offset=".22" stop-color="#ffe2a8" stop-opacity=".2"/>
+    <stop offset=".5" stop-color="#f2d8ac" stop-opacity=".07"/>
+    <stop offset="1" stop-color="#f2d8ac" stop-opacity="0"/>
+  </radialGradient>
+
+  <!-- 달의 은은한 빛 -->
+
+  <radialGradient id="moonHalo">
+    <stop offset="0" stop-color="#e9f7ff" stop-opacity=".4"/>
+    <stop offset=".25" stop-color="#b8dff4" stop-opacity=".21"/>
+    <stop offset=".55" stop-color="#8dbbd9" stop-opacity=".07"/>
+    <stop offset="1" stop-color="#8dbbd9" stop-opacity="0"/>
+  </radialGradient>
+
+  <!-- 구름 흐림 -->
 
   <filter
     id="cloudBlur"
@@ -359,7 +517,9 @@ button {
 
 </defs>
 
-<!-- 흐린 하늘 -->
+<!-- ─────────────────────────
+     흐린 하늘
+───────────────────────── -->
 
 <rect
   width="100%"
@@ -450,17 +610,24 @@ button {
 
 </g>
 
-<!-- 태양 -->
+<!-- ─────────────────────────
+     태양
+───────────────────────── -->
 
-<g id="sunArtwork" class="light-breathe">
+<g id="sunArtwork">
+
+  <!-- 부드럽게 퍼지는 빛 -->
 
   <circle
     id="sunAura"
+    class="sun-glow"
     cx="753"
     cy="177"
-    r="190"
-    fill="url(#sunLight)"
+    r="210"
+    fill="url(#sunHalo)"
   />
+
+  <!-- 태양 본체 -->
 
   <circle
     id="sunDiscShape"
@@ -472,12 +639,12 @@ button {
 
 </g>
 
-<!-- 태양 앞을 지나가는 구름 -->
+<!-- 태양 앞의 옅은 구름 -->
 
 <g
   class="cloud-float-b"
   filter="url(#cloudBlur)"
-  opacity=".26"
+  opacity=".22"
 >
   <path
     d="
@@ -492,7 +659,9 @@ button {
   />
 </g>
 
-<!-- 바다 -->
+<!-- ─────────────────────────
+     바다
+───────────────────────── -->
 
 <g clip-path="url(#seaClip)">
 
@@ -502,15 +671,15 @@ button {
     fill="url(#sea)"
   />
 
-  <!-- 바닷속 은은한 달빛 -->
+  <!-- 달빛 -->
 
-  <ellipse
+  <circle
     id="moonAura"
+    class="moon-glow"
     cx="232"
     cy="540"
-    rx="185"
-    ry="188"
-    fill="url(#moonLight)"
+    r="200"
+    fill="url(#moonHalo)"
   />
 
   <!-- 점박이 없는 보름달 -->
@@ -525,7 +694,9 @@ button {
 
 </g>
 
-<!-- 해적선 -->
+<!-- ─────────────────────────
+     해적선
+───────────────────────── -->
 
 <g id="shipPosition" transform="translate(280 259)">
 
@@ -566,7 +737,7 @@ button {
     fill="#111b29"
   />
 
-  <!-- 해적선 선체 -->
+  <!-- 선체 -->
 
   <path
     d="
@@ -583,26 +754,26 @@ button {
     stroke-width="3"
   />
 
-  <!-- 선체 장식 -->
+  <!-- 선체 장식 : 무채색 -->
 
   <path
     d="M-87 -24 Q-10 -31 83 -24"
     stroke="#40566a"
-    stroke-opacity=".65"
+    stroke-opacity=".55"
     stroke-width="2"
     fill="none"
   />
 
   <path
     d="M-73 -9 L61 -9"
-    stroke="#b5a17b"
-    stroke-opacity=".42"
+    stroke="#435465"
+    stroke-opacity=".4"
     stroke-width="2"
   />
 
-  <!-- 선체 창문 -->
+  <!-- 선체 창문 : 노란색 제거 -->
 
-  <g fill="#c5a46e" opacity=".6">
+  <g fill="#405567" opacity=".65">
     <circle cx="-53" cy="-17" r="2.8"/>
     <circle cx="-24" cy="-18" r="2.8"/>
     <circle cx="6" cy="-18" r="2.8"/>
@@ -627,8 +798,6 @@ button {
       stroke-width="5"
     />
 
-    <!-- 가로 돛대 -->
-
     <path
       d="
         M-82 -156 L29 -156
@@ -638,8 +807,6 @@ button {
       "
       stroke-width="3"
     />
-
-    <!-- 밧줄 -->
 
     <path
       d="
@@ -718,7 +885,7 @@ button {
     fill="#172738"
   />
 
-  <!-- 돛의 주름 -->
+  <!-- 돛 주름 -->
 
   <g
     stroke="#637384"
@@ -749,14 +916,14 @@ button {
   <!-- 해골 문양 -->
 
   <g
-    fill="#d9d9cb"
+    fill="#b7c3ca"
     transform="translate(-13 -179) scale(.42)"
   >
 
     <path
       d="M-12 -8 L12 10 M12 -8 L-12 10"
       fill="none"
-      stroke="#d9d9cb"
+      stroke="#b7c3ca"
       stroke-width="2.5"
     />
 
@@ -849,6 +1016,7 @@ button {
 
   <section
     class="profile"
+    id="profile"
     role="dialog"
     aria-modal="true"
     aria-labelledby="profileHeading"
@@ -872,10 +1040,25 @@ button {
 
     <div class="profile-body">
 
-      <p
+      <div
+        class="profile-decoration"
+        aria-hidden="true"
+      ></div>
+
+      <h3
         class="profile-name"
         id="profileName"
+      ></h3>
+
+      <p
+        class="profile-description"
+        id="profileDescription"
       ></p>
+
+      <div
+        class="profile-accent"
+        aria-hidden="true"
+      ></div>
 
     </div>
 
@@ -901,13 +1084,19 @@ button {
   const moonButton = document.getElementById("moonButton");
 
   const modal = document.getElementById("modal");
+  const profile = document.getElementById("profile");
+
   const heading = document.getElementById("profileHeading");
   const name = document.getElementById("profileName");
+  const description = document.getElementById("profileDescription");
+
   const closeButton = document.getElementById("closeProfile");
 
   let lastFocus = null;
 
-  /* 화면 크기에 따른 풍경 배치 */
+  /* ─────────────────────────
+     화면 크기에 따른 풍경 배치
+  ───────────────────────── */
 
   function layout() {
 
@@ -919,7 +1108,7 @@ button {
       `0 0 ${w} ${h}`
     );
 
-    /* 기울어진 하늘과 바다의 경계 */
+    /* 기울어진 하늘과 바다 */
 
     const y1 = h * .205;
     const y2 = h * .795;
@@ -930,7 +1119,7 @@ button {
       `M0 ${y1} L${w} ${y2} L${w} ${h} L0 ${h} Z`
     );
 
-    /* 해와 달의 위치 */
+    /* 해와 달 */
 
     const sunX = w * .75;
     const sunY = h * .245;
@@ -946,11 +1135,13 @@ button {
     const moonR = r * 1.05;
 
     function setCircle(id, x, y, radius) {
+
       const element = document.getElementById(id);
 
       element.setAttribute("cx", x);
       element.setAttribute("cy", y);
       element.setAttribute("r", radius);
+
     }
 
     /* 태양 */
@@ -966,7 +1157,7 @@ button {
       "sunAura",
       sunX,
       sunY,
-      r * 3.9
+      r * 4.1
     );
 
     /* 달 */
@@ -978,12 +1169,12 @@ button {
       moonR
     );
 
-    const moonAura = document.getElementById("moonAura");
-
-    moonAura.setAttribute("cx", moonX);
-    moonAura.setAttribute("cy", moonY);
-    moonAura.setAttribute("rx", moonR * 3.4);
-    moonAura.setAttribute("ry", moonR * 3.4);
+    setCircle(
+      "moonAura",
+      moonX,
+      moonY,
+      moonR * 4
+    );
 
     /* 해 클릭 영역 */
 
@@ -1019,12 +1210,13 @@ button {
       `${moonR * 2}px`
     );
 
-    /* 해적선 위치와 기울기 */
+    /* 해적선 */
 
     const sx = w * .29;
     const sy = y1 + dy * .29;
 
-    const angle = Math.atan2(dy, w) * 180 / Math.PI;
+    const angle =
+      Math.atan2(dy, w) * 180 / Math.PI;
 
     const scale = Math.max(
       .42,
@@ -1048,7 +1240,9 @@ button {
 
   }
 
-  /* 구름의 비율 조절 */
+  /* ─────────────────────────
+     구름 비율
+  ───────────────────────── */
 
   const clouds = [
     ...scene.querySelectorAll(
@@ -1084,23 +1278,46 @@ button {
 
   refresh();
 
-  /* 설명창 */
+  /* ─────────────────────────
+     캐릭터 설명창
+  ───────────────────────── */
+
+  const characters = {
+
+    sun: {
+      title: "선장님",
+      name: "차태경",
+      description: "태양의 힘을 잃어버린 해적선의 선장."
+    },
+
+    moon: {
+      title: "아귀인어",
+      name: "강지한",
+      description: "깊은 바닷속에서 달의 힘을 품게 된 인어."
+    }
+
+  };
 
   function openProfile(type) {
 
+    const character = characters[type];
+
     lastFocus = document.activeElement;
 
-    if (type === "sun") {
+    heading.textContent = character.title;
+    name.textContent = character.name;
+    description.textContent = character.description;
 
-      heading.textContent = "선장님";
-      name.textContent = "차태경";
+    profile.classList.remove(
+      "sun-profile",
+      "moon-profile"
+    );
 
-    } else {
-
-      heading.textContent = "아귀인어";
-      name.textContent = "강지한";
-
-    }
+    profile.classList.add(
+      type === "sun"
+        ? "sun-profile"
+        : "moon-profile"
+    );
 
     modal.classList.add("open");
 
