@@ -69,21 +69,27 @@ button{font:inherit}
 .info-grid{display:grid;grid-template-columns:58px 1fr;column-gap:15px;row-gap:12px}
 .info-label{font-size:12px;line-height:1.9;color:#aebfcb}
 .info-value{font-size:12px;line-height:1.9;color:#e8eff3;word-break:keep-all}
+.sun-profile .info-label{color:#c9b89f}
+.sun-profile .info-value{color:#f0e3cf}
 .section-text{margin:0;font-size:12px;line-height:2.2;color:#e3eaf0;word-break:keep-all;white-space:pre-line}
 .thought-section{margin-top:30px;padding-top:23px;border-top:1px solid rgba(205,220,228,.2)}
 .thought-title{margin:0 0 17px;font-size:13px;font-weight:500;letter-spacing:.08em;color:#e7edf2}
 .thought-text{margin:0;min-height:115px;color:#e3eaf0;font-size:12px;line-height:2.3;white-space:pre-line;word-break:keep-all}
 .thought-placeholder{color:#a9b6bf;font-style:italic}
-.ship-box{background:linear-gradient(145deg,#49352d,#30231f);border:1px solid rgba(207,174,149,.27);padding:23px 22px 25px;margin-bottom:20px}
-.ship-box .section-title{color:#f2dfce;border-bottom-color:rgba(232,203,176,.23)}
-.ship-box .info-label{color:#cdb4a2}
-.ship-box .info-value,.ship-box .section-text{color:#f0e4d9}
-.ship-box .ship-intro{margin:0 0 19px;color:#f3e6d9;font-size:12px;line-height:2.2;word-break:keep-all}
-.ship-box .rule-list{margin:0;padding-left:17px;color:#eddfd2;font-size:12px;line-height:2.2;word-break:keep-all}
-.persona-box{background:#f6f5f1;border:1px solid #dedbd4;padding:23px 22px 25px;color:#292e32}
-.persona-box .section-title{color:#30373b;border-bottom-color:#d5d5d1}
-.persona-box .section-text{color:#42484b}
-.persona-note{margin:0 0 12px;color:#747b7d;font-size:11px;line-height:1.8}
+.ship-box{background:linear-gradient(145deg,#2d4351,#1d303e);border:1px solid rgba(154,185,204,.3);padding:23px 22px 25px;margin-bottom:20px}
+.ship-box .section-title{color:#e2eef5;border-bottom-color:rgba(186,211,224,.23)}
+.ship-box .info-label{color:#afc6d5}
+.ship-box .info-value,.ship-box .section-text{color:#e7f0f4}
+.ship-box .ship-intro{margin:0 0 19px;color:#e6eef3;font-size:12px;line-height:2.2;word-break:keep-all}
+.ship-box .rule-list{margin:0;padding-left:17px;color:#e1ebf1;font-size:12px;line-height:2.2;word-break:keep-all}
+.persona-box{background:linear-gradient(150deg,#e5ebec,#d5e0e4);border:1px solid #b6c9d1;padding:23px 22px 25px;color:#243743}
+.persona-box .section-title{color:#273d4b;border-bottom-color:#b5c7ce}
+.persona-box .section-text{color:#2c414e}
+.persona-note{margin:0 0 12px;color:#637986;font-size:11px;line-height:1.8}
+.persona-list{list-style:none;margin:0;padding:0;color:#2c414e;font-size:12px;line-height:2.15;word-break:keep-all}
+.persona-list li{position:relative;padding-left:13px;margin:0 0 9px}
+.persona-list li:last-child{margin-bottom:0}
+.persona-list li::before{content:"-";position:absolute;left:0;top:0}
 @media(max-width:600px){.scene-title{top:10%;font-size:clamp(18px,4.4vw,25px);letter-spacing:.17em;text-indent:.17em}.profile{width:min(370px,100%)}.profile.ship-profile{width:min(410px,100%)}.profile-body{padding:28px 23px 34px}.profile-name{font-size:25px}.ship-box,.persona-box{padding:20px 18px}}
 @media(prefers-reduced-motion:reduce){*,*::before,*::after{animation:none!important;transition:none!important}}
 </style>
@@ -193,10 +199,10 @@ button{font:inherit}
 <div id="shipInfo" hidden>
 <section class="ship-box">
 <h4 class="section-title">해적선 특징</h4>
-<p class="ship-intro">차태경이 이끄는 대형 해적선. 남성 선원만 승선할 수 있으며, 선장과 선원들은 정해진 선상 규율에 따라 생활한다.</p>
+<p class="ship-intro">차태경이 이끄는 대형 해적선. 선장과 선원들은 정해진 선상 규율에 따라 생활한다.</p>
 <div class="info-grid" style="margin-bottom:19px">
 <span class="info-label">선장</span><span class="info-value">차태경</span>
-<span class="info-label">승선</span><span class="info-value">남성만 승선 가능</span>
+<span class="info-label">승선</span><span class="info-value">남성만 승선 가능 (하지만 종종 남장여자가 몰래 배에 타는 것 같다)</span>
 <span class="info-label">선출</span><span class="info-value">선원 투표로 선장 선출</span>
 <span class="info-label">전리품</span><span class="info-value">직책별 몫에 따라 분배</span>
 </div>
@@ -208,10 +214,14 @@ button{font:inherit}
 </section>
 <section class="persona-box">
 <h4 class="section-title">페르소나 고정 설정</h4>
-<p class="persona-note">플레이 전 참고할 기본 설정</p>
-<p class="section-text">USER는 차태경이 이끄는 해적선에 승선한 선원입니다.
-
-선내에서 맡는 직책과 구체적인 역할은 자유롭게 설정할 수 있습니다.</p>
+<ul class="persona-list">
+<li>USER는 차태경이 이끄는 해적선에 승선했습니다.</li>
+<li>태경의 눈이 다친 이후 USER는 태경을 걱정한 적 있습니다.</li>
+<li>USER는 태경보다 지한을 먼저 만났습니다.</li>
+<li>USER가 지한을 처음 본 순간 : 어두운 밤, 해변가에서 갈매기를 먹고 있는 지한의 뒷모습을 보고 사람이라 착각하여 말을 건 적 있습니다. (무슨 말을 했는지는 자유롭게!)</li>
+<li>선원일 시: 선내에서 맡는 직책과 구체적인 역할은 자유롭게 설정!</li>
+<li>선원이 아닌 다른 역할도 가능해요!</li>
+</ul>
 </section>
 </div>
 </div>
@@ -318,7 +328,7 @@ basics:[
 ["눈","금색 눈. 왼쪽 눈은 검은 안대로 가림"],
 ["직책","해적선 선장"]
 ],
-personality:"입이 거칠고 성질이 급하지만, 능청스럽고 책임감이 강하다.\n\n뛰어난 항해 실력과 전투 지휘 능력으로 선원들의 신뢰를 얻었다. 자기 사람과 물건은 끝까지 챙기는 성격이다.",
+personality:"- 입이 거칠고 성질이 급하지만, 능청스럽고 책임감이 강하다.\n- 뛰어난 항해 실력과 전투 지휘 능력으로 선원들의 신뢰를 얻었다.\n- 자기 사람과 물건은 끝까지 챙기는 성격이다.",
 thought:""
 },
 moon:{
@@ -332,13 +342,13 @@ basics:[
 ["눈","검은색"],
 ["특징","머리 위에서 빛나는 유인돌기"]
 ],
-personality:"말수가 적고 나른하다. 좀처럼 표정이 변하지 않으며, 무표정한 얼굴로 뻔뻔한 농담을 건넨다.\n\n오랫동안 바다에서 홀로 살아왔다.",
+personality:"- 말수가 적고 나른하다.\n- 좀처럼 표정이 변하지 않으며, 무표정한 얼굴로 뻔뻔한 농담을 건넨다.\n- 오랫동안 바다에서 홀로 살아왔다.",
 thought:""
 },
 ship:{
 title:"해적선",
-name:"해적선",
-description:"끝없이 펼쳐진 바다를 항해하는 배."
+name:"",
+description:""
 }
 };
 
@@ -364,6 +374,9 @@ description.textContent=data.description;
 profile.classList.remove("sun-profile","moon-profile","ship-profile");
 profile.classList.add(`${type}-profile`);
 const isShip=type==="ship";
+name.hidden=isShip;
+description.hidden=isShip;
+profile.querySelector(".profile-accent").hidden=isShip;
 shipInfo.hidden=!isShip;
 characterInfo.hidden=isShip;
 if(!isShip){
