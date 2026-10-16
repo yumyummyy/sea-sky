@@ -6,1485 +6,393 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <meta name="theme-color" content="#263a4b">
 <title>빛이 잠긴 바다</title>
-
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Noto+Serif+KR:wght@300;400;500;600&display=swap" rel="stylesheet">
-
 <style>
-* {
-  box-sizing: border-box;
-}
-
-html, body {
-  margin: 0;
-  width: 100%;
-  height: 100%;
-  overflow: hidden;
-}
-
-body {
-  background: #102638;
-  color: #edf0ee;
-  font-family: "Noto Serif KR", serif;
-}
-
-button {
-  font: inherit;
-}
-
-.world {
-  position: relative;
-  width: 100%;
-  height: 100vh;
-  height: 100svh;
-  overflow: hidden;
-  isolation: isolate;
-  background: #293f50;
-}
-
-/* 하늘과 바다 명암 */
-
-.world::before,
-.world::after {
-  content: "";
-  position: absolute;
-  left: 0;
-  right: 0;
-  pointer-events: none;
-  z-index: 5;
-}
-
-.world::before {
-  top: 0;
-  height: 42%;
-  background: linear-gradient(
-    to bottom,
-    rgba(218,228,231,.17),
-    rgba(194,209,218,.08) 45%,
-    transparent
-  );
-}
-
-.world::after {
-  bottom: 0;
-  height: 48%;
-  background: linear-gradient(
-    to bottom,
-    transparent,
-    rgba(5,19,33,.15) 42%,
-    rgba(3,12,25,.48)
-  );
-}
-
-/* 풍경 */
-
-.landscape {
-  position: absolute;
-  inset: 0;
-  width: 100%;
-  height: 100%;
-  display: block;
-}
-
-/* 해와 달 클릭 영역 */
-
-.celestial {
-  position: absolute;
-  z-index: 10;
-  display: block;
-  padding: 0;
-  margin: 0;
-  border: none;
-  outline: none;
-  border-radius: 50%;
-  background: transparent;
-  box-shadow: none;
-  appearance: none;
-  -webkit-appearance: none;
-  -webkit-tap-highlight-color: transparent;
-  cursor: pointer;
-}
-
-.celestial:focus,
-.celestial:active {
-  outline: none;
-  box-shadow: none;
-}
-
-.celestial:focus-visible {
-  outline: 1px solid rgba(255,255,255,.8);
-  outline-offset: 5px;
-}
-
-.sun-button {
-  left: var(--sun-left);
-  top: var(--sun-top);
-  width: var(--sun-size);
-  height: var(--sun-size);
-}
-
-.moon-button {
-  left: var(--moon-left);
-  top: var(--moon-top);
-  width: var(--moon-size);
-  height: var(--moon-size);
-}
-
-/* 해적선 클릭 영역 */
-
-.ship-click {
-  position: absolute;
-  z-index: 11;
-  left: var(--ship-left);
-  top: var(--ship-top);
-  width: var(--ship-width);
-  height: var(--ship-height);
-
-  transform: rotate(var(--ship-angle));
-  transform-origin: 50% 100%;
-
-  padding: 0;
-  margin: 0;
-  border: 0;
-  outline: none;
-  background: transparent;
-  appearance: none;
-  -webkit-appearance: none;
-  -webkit-tap-highlight-color: transparent;
-  cursor: pointer;
-}
-
-.ship-click:focus-visible {
-  outline: 1px solid rgba(225,235,240,.8);
-  outline-offset: 4px;
-}
-
-/* 제목 */
-
-.scene-title {
-  position: absolute;
-  z-index: 12;
-  top: 8%;
-  left: 0;
-  width: 100%;
-  padding: 0 15px;
-  margin: 0;
-  text-align: center;
-  pointer-events: none;
-
-  font-size: clamp(18px, 2.4vw, 32px);
-  font-weight: 300;
-  letter-spacing: .25em;
-  text-indent: .25em;
-
-  color: #edf0ee;
-  text-shadow: 0 2px 15px rgba(18,37,54,.7);
-}
-
-/* 애니메이션 */
-
-.cloud-float-a {
-  animation: driftA 45s ease-in-out infinite alternate;
-}
-
-.cloud-float-b {
-  animation: driftB 60s ease-in-out infinite alternate;
-}
-
-.sun-glow {
-  animation: sunGlow 10s ease-in-out infinite alternate;
-}
-
-.moon-glow {
-  animation: moonGlow 12s ease-in-out infinite alternate;
-}
-
-.ship-sway {
-  animation: sway 9s ease-in-out infinite alternate;
-  transform-box: fill-box;
-  transform-origin: 50% 100%;
-}
-
-@keyframes driftA {
-  from { transform: translateX(-12px); }
-  to { transform: translateX(38px); }
-}
-
-@keyframes driftB {
-  from { transform: translateX(15px); }
-  to { transform: translateX(-44px); }
-}
-
-@keyframes sunGlow {
-  from { opacity: .72; }
-  to { opacity: 1; }
-}
-
-@keyframes moonGlow {
-  from { opacity: .65; }
-  to { opacity: 1; }
-}
-
-@keyframes sway {
-  from { transform: rotate(-.5deg); }
-  to { transform: rotate(.5deg); }
-}
-
-/* 설명창 */
-
-.modal {
-  position: fixed;
-  z-index: 30;
-  inset: 0;
-
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  padding: 20px;
-
-  background: rgba(5,14,26,.7);
-  backdrop-filter: blur(9px);
-
-  opacity: 0;
-  visibility: hidden;
-  pointer-events: none;
-
-  transition:
-    opacity .4s ease,
-    visibility .4s ease;
-}
-
-.modal.open {
-  opacity: 1;
-  visibility: visible;
-  pointer-events: auto;
-}
-
-.profile {
-  position: relative;
-  width: min(390px, 100%);
-  max-height: min(82svh, 650px);
-  overflow: hidden;
-  display: flex;
-  flex-direction: column;
-
-  border: 1px solid rgba(226,235,236,.23);
-  background: #142636;
-  box-shadow: 0 22px 70px rgba(4,12,23,.55);
-
-  transform: translateY(14px);
-  transition: transform .4s ease;
-}
-
-.modal.open .profile {
-  transform: translateY(0);
-}
-
-/* 선장님 */
-
-.profile.sun-profile {
-  border-color: rgba(206,195,169,.3);
-  background:
-    radial-gradient(
-      ellipse at 100% 0%,
-      rgba(153,133,101,.12),
-      transparent 60%
-    ),
-    linear-gradient(155deg,#303b43,#172632 80%);
-}
-
-/* 아귀인어 */
-
-.profile.moon-profile {
-  border-color: rgba(157,193,213,.27);
-  background:
-    radial-gradient(
-      ellipse at 0% 100%,
-      rgba(78,133,167,.16),
-      transparent 65%
-    ),
-    linear-gradient(155deg,#1d3547,#0b1e30 85%);
-}
-
-/* 해적선 */
-
-.profile.ship-profile {
-  width: min(450px, 100%);
-  border-color: rgba(177,194,207,.32);
-  background:
-    radial-gradient(
-      ellipse at 100% 100%,
-      rgba(64,99,125,.16),
-      transparent 65%
-    ),
-    linear-gradient(150deg,#273746,#101e2d 85%);
-}
-
-/* 설명창 상단 */
-
-.profile-header {
-  position: relative;
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  flex-shrink: 0;
-  padding: 18px 24px;
-  border-bottom: 1px solid rgba(213,224,224,.16);
-}
-
-.profile-heading {
-  margin: 0;
-  font-size: 13px;
-  font-weight: 400;
-  letter-spacing: .18em;
-  color: #a8b7c1;
-}
-
-.sun-profile .profile-heading {
-  color: #b7aa98;
-}
-
-.moon-profile .profile-heading {
-  color: #96b4c5;
-}
-
-.ship-profile .profile-heading {
-  color: #9daeba;
-}
-
-.close-profile {
-  padding: 0;
-  border: none;
-  background: transparent;
-  color: #e8eff2;
-  font-size: 26px;
-  line-height: 1;
-  cursor: pointer;
-}
-
-/* 설명창 본문 */
-
-.profile-body {
-  position: relative;
-  padding: 35px 30px 42px;
-  text-align: left;
-  overflow-y: auto;
-  overscroll-behavior: contain;
-  scrollbar-width: thin;
-  scrollbar-color: #536b7c transparent;
-}
-
-.profile-name {
-  position: relative;
-  z-index: 1;
-  margin: 0;
-  font-size: 27px;
-  font-weight: 300;
-  letter-spacing: .13em;
-  color: #f3f5f4;
-}
-
-.profile-description {
-  position: relative;
-  z-index: 1;
-  margin: 17px 0 0;
-  font-size: 12px;
-  font-weight: 400;
-  line-height: 2.1;
-  letter-spacing: .025em;
-  color: #e3e9ec;
-  word-break: keep-all;
-}
-
-.sun-profile .profile-description {
-  color: #f0e4d2;
-}
-
-.moon-profile .profile-description {
-  color: #dceef8;
-}
-
-.ship-profile .profile-description {
-  color: #e0eaf0;
-}
-
-.profile-accent {
-  width: 34px;
-  height: 1px;
-  margin-top: 26px;
-  opacity: .85;
-}
-
-.sun-profile .profile-accent {
-  background: linear-gradient(90deg,#d9c5a1,transparent);
-}
-
-.moon-profile .profile-accent {
-  background: linear-gradient(90deg,#a6cde3,transparent);
-}
-
-.ship-profile .profile-accent {
-  background: linear-gradient(90deg,#b5c5d1,transparent);
-}
-
-.profile-decoration {
-  position: absolute;
-  right: 27px;
-  top: 29px;
-  width: 58px;
-  height: 58px;
-  border-radius: 50%;
-  pointer-events: none;
-}
-
-.sun-profile .profile-decoration {
-  border: 1px solid rgba(224,204,163,.13);
-  box-shadow:
-    0 0 25px rgba(215,188,138,.07),
-    inset 0 0 20px rgba(215,188,138,.04);
-}
-
-.moon-profile .profile-decoration {
-  border: 1px solid rgba(180,218,240,.12);
-  box-shadow:
-    0 0 27px rgba(134,189,225,.09),
-    inset 0 0 20px rgba(134,189,225,.04);
-}
-
-.ship-profile .profile-decoration {
-  width: 70px;
-  height: 70px;
-  right: 22px;
-  top: 24px;
-  border: 1px solid rgba(178,201,218,.12);
-  border-radius: 3px;
-  transform: rotate(45deg);
-}
-
-/* 해적선 정보 */
-
-.ship-info {
-  margin-top: 29px;
-}
-
-.ship-info[hidden] {
-  display: none;
-}
-
-.ship-section {
-  margin-bottom: 28px;
-}
-
-.ship-section:last-child {
-  margin-bottom: 0;
-}
-
-.ship-section-title {
-  margin: 0 0 13px;
-  padding-bottom: 11px;
-  border-bottom: 1px solid rgba(194,213,224,.17);
-  color: #e5eef3;
-  font-size: 13px;
-  font-weight: 500;
-  letter-spacing: .1em;
-}
-
-.ship-section-text {
-  margin: 0;
-  color: #e0eaf0;
-  font-size: 12px;
-  font-weight: 400;
-  line-height: 2.2;
-  word-break: keep-all;
-}
-
-.ship-info-row {
-  display: flex;
-  gap: 14px;
-  margin: 10px 0;
-  align-items: flex-start;
-}
-
-.ship-info-label {
-  flex-shrink: 0;
-  min-width: 54px;
-  color: #aebfcb;
-  font-size: 12px;
-}
-
-.ship-info-value {
-  color: #e8eff3;
-  font-size: 12px;
-  line-height: 1.9;
-}
-
-/* 모바일 */
-
-@media (max-width: 600px) {
-  .scene-title {
-    top: 10%;
-    font-size: clamp(18px, 4.4vw, 25px);
-    letter-spacing: .17em;
-    text-indent: .17em;
-  }
-
-  .profile {
-    width: min(350px, 100%);
-  }
-
-  .profile.ship-profile {
-    width: min(390px, 100%);
-  }
-
-  .profile-body {
-    padding: 30px 26px 37px;
-  }
-
-  .profile-name {
-    font-size: 25px;
-  }
-}
-
-@media (prefers-reduced-motion: reduce) {
-  *,
-  *::before,
-  *::after {
-    animation: none !important;
-    transition: none !important;
-  }
-}
+*{box-sizing:border-box}
+html,body{margin:0;width:100%;height:100%;overflow:hidden}
+body{background:#102638;color:#edf0ee;font-family:"Noto Serif KR",serif}
+button{font:inherit}
+.world{position:relative;width:100%;height:100vh;height:100svh;overflow:hidden;isolation:isolate;background:#293f50}
+.world::before,.world::after{content:"";position:absolute;left:0;right:0;pointer-events:none;z-index:5}
+.world::before{top:0;height:42%;background:linear-gradient(to bottom,rgba(218,228,231,.17),rgba(194,209,218,.08) 45%,transparent)}
+.world::after{bottom:0;height:48%;background:linear-gradient(to bottom,transparent,rgba(5,19,33,.15) 42%,rgba(3,12,25,.48))}
+.landscape{position:absolute;inset:0;width:100%;height:100%;display:block}
+.celestial{position:absolute;z-index:10;display:block;padding:0;margin:0;border:0;outline:0;border-radius:50%;background:transparent;box-shadow:none;appearance:none;-webkit-appearance:none;-webkit-tap-highlight-color:transparent;cursor:pointer}
+.celestial:focus-visible,.ship-click:focus-visible{outline:1px solid rgba(255,255,255,.8);outline-offset:5px}
+.sun-button{left:var(--sun-left);top:var(--sun-top);width:var(--sun-size);height:var(--sun-size)}
+.moon-button{left:var(--moon-left);top:var(--moon-top);width:var(--moon-size);height:var(--moon-size)}
+.ship-click{position:absolute;z-index:11;padding:0;margin:0;border:0;background:transparent;appearance:none;-webkit-appearance:none;-webkit-tap-highlight-color:transparent;cursor:pointer}
+.scene-title{position:absolute;z-index:12;top:8%;left:0;width:100%;padding:0 15px;margin:0;text-align:center;pointer-events:none;font-size:clamp(18px,2.4vw,32px);font-weight:300;letter-spacing:.25em;text-indent:.25em;color:#edf0ee;text-shadow:0 2px 15px rgba(18,37,54,.7)}
+.cloud-float-a{animation:driftA 45s ease-in-out infinite alternate}
+.cloud-float-b{animation:driftB 60s ease-in-out infinite alternate}
+.sun-glow{animation:sunGlow 10s ease-in-out infinite alternate}
+.moon-glow{animation:moonGlow 12s ease-in-out infinite alternate}
+.ship-sway{animation:sway 9s ease-in-out infinite alternate;transform-box:fill-box;transform-origin:50% 100%}
+@keyframes driftA{from{transform:translateX(-12px)}to{transform:translateX(38px)}}
+@keyframes driftB{from{transform:translateX(15px)}to{transform:translateX(-44px)}}
+@keyframes sunGlow{from{opacity:.72}to{opacity:1}}
+@keyframes moonGlow{from{opacity:.65}to{opacity:1}}
+@keyframes sway{from{transform:rotate(-.5deg)}to{transform:rotate(.5deg)}}
+.modal{position:fixed;z-index:30;inset:0;display:flex;align-items:center;justify-content:center;padding:20px;background:rgba(5,14,26,.7);backdrop-filter:blur(9px);opacity:0;visibility:hidden;pointer-events:none;transition:opacity .4s ease,visibility .4s ease}
+.modal.open{opacity:1;visibility:visible;pointer-events:auto}
+.profile{position:relative;width:min(430px,100%);max-height:min(85svh,760px);overflow:hidden;display:flex;flex-direction:column;border:1px solid rgba(226,235,236,.23);background:#142636;box-shadow:0 22px 70px rgba(4,12,23,.55);transform:translateY(14px);transition:transform .4s ease}
+.modal.open .profile{transform:translateY(0)}
+.profile.sun-profile{border-color:rgba(206,195,169,.3);background:radial-gradient(ellipse at 100% 0%,rgba(153,133,101,.12),transparent 60%),linear-gradient(155deg,#303b43,#172632 80%)}
+.profile.moon-profile{border-color:rgba(157,193,213,.27);background:radial-gradient(ellipse at 0% 100%,rgba(78,133,167,.16),transparent 65%),linear-gradient(155deg,#1d3547,#0b1e30 85%)}
+.profile.ship-profile{width:min(480px,100%);border-color:rgba(177,194,207,.32);background:radial-gradient(ellipse at 100% 100%,rgba(64,99,125,.16),transparent 65%),linear-gradient(150deg,#273746,#101e2d 85%)}
+.profile-header{display:flex;align-items:center;justify-content:space-between;flex-shrink:0;padding:18px 24px;border-bottom:1px solid rgba(213,224,224,.16)}
+.profile-heading{margin:0;font-size:13px;font-weight:400;letter-spacing:.18em;color:#a8b7c1}
+.sun-profile .profile-heading{color:#b7aa98}
+.moon-profile .profile-heading{color:#96b4c5}
+.ship-profile .profile-heading{color:#9daeba}
+.close-profile{padding:0;border:0;background:transparent;color:#e8eff2;font-size:26px;line-height:1;cursor:pointer}
+.profile-body{position:relative;padding:32px 28px 38px;text-align:left;overflow-y:auto;overscroll-behavior:contain;scrollbar-width:thin;scrollbar-color:#536b7c transparent}
+.profile-name{position:relative;z-index:1;margin:0;font-size:27px;font-weight:300;letter-spacing:.13em;color:#f3f5f4}
+.profile-description{position:relative;z-index:1;margin:14px 0 0;font-size:12px;line-height:2;letter-spacing:.025em;color:#e3e9ec;word-break:keep-all}
+.sun-profile .profile-description{color:#f0e4d2}
+.moon-profile .profile-description{color:#dceef8}
+.ship-profile .profile-description{color:#e0eaf0}
+.profile-accent{width:34px;height:1px;margin:23px 0 25px;opacity:.85}
+.sun-profile .profile-accent{background:linear-gradient(90deg,#d9c5a1,transparent)}
+.moon-profile .profile-accent{background:linear-gradient(90deg,#a6cde3,transparent)}
+.ship-profile .profile-accent{background:linear-gradient(90deg,#b5c5d1,transparent)}
+.profile-decoration{position:absolute;right:27px;top:29px;width:58px;height:58px;border-radius:50%;pointer-events:none}
+.sun-profile .profile-decoration{border:1px solid rgba(224,204,163,.13);box-shadow:0 0 25px rgba(215,188,138,.07)}
+.moon-profile .profile-decoration{border:1px solid rgba(180,218,240,.12);box-shadow:0 0 27px rgba(134,189,225,.09)}
+.ship-profile .profile-decoration{width:70px;height:70px;right:22px;top:24px;border:1px solid rgba(178,201,218,.12);border-radius:3px;transform:rotate(45deg)}
+[hidden]{display:none!important}
+.profile-section{margin:0 0 25px}
+.profile-section:last-child{margin-bottom:0}
+.section-title{margin:0 0 13px;padding-bottom:10px;border-bottom:1px solid rgba(205,220,228,.2);font-size:13px;font-weight:500;letter-spacing:.08em;color:#e5edf1}
+.info-grid{display:grid;grid-template-columns:58px 1fr;column-gap:15px;row-gap:12px}
+.info-label{font-size:12px;line-height:1.9;color:#aebfcb}
+.info-value{font-size:12px;line-height:1.9;color:#e8eff3;word-break:keep-all}
+.section-text{margin:0;font-size:12px;line-height:2.2;color:#e3eaf0;word-break:keep-all;white-space:pre-line}
+.thought-section{margin-top:30px;padding-top:23px;border-top:1px solid rgba(205,220,228,.2)}
+.thought-title{margin:0 0 17px;font-size:13px;font-weight:500;letter-spacing:.08em;color:#e7edf2}
+.thought-text{margin:0;min-height:115px;color:#e3eaf0;font-size:12px;line-height:2.3;white-space:pre-line;word-break:keep-all}
+.thought-placeholder{color:#a9b6bf;font-style:italic}
+.ship-box{background:linear-gradient(145deg,#49352d,#30231f);border:1px solid rgba(207,174,149,.27);padding:23px 22px 25px;margin-bottom:20px}
+.ship-box .section-title{color:#f2dfce;border-bottom-color:rgba(232,203,176,.23)}
+.ship-box .info-label{color:#cdb4a2}
+.ship-box .info-value,.ship-box .section-text{color:#f0e4d9}
+.ship-box .ship-intro{margin:0 0 19px;color:#f3e6d9;font-size:12px;line-height:2.2;word-break:keep-all}
+.ship-box .rule-list{margin:0;padding-left:17px;color:#eddfd2;font-size:12px;line-height:2.2;word-break:keep-all}
+.persona-box{background:#f6f5f1;border:1px solid #dedbd4;padding:23px 22px 25px;color:#292e32}
+.persona-box .section-title{color:#30373b;border-bottom-color:#d5d5d1}
+.persona-box .section-text{color:#42484b}
+.persona-note{margin:0 0 12px;color:#747b7d;font-size:11px;line-height:1.8}
+@media(max-width:600px){.scene-title{top:10%;font-size:clamp(18px,4.4vw,25px);letter-spacing:.17em;text-indent:.17em}.profile{width:min(370px,100%)}.profile.ship-profile{width:min(410px,100%)}.profile-body{padding:28px 23px 34px}.profile-name{font-size:25px}.ship-box,.persona-box{padding:20px 18px}}
+@media(prefers-reduced-motion:reduce){*,*::before,*::after{animation:none!important;transition:none!important}}
 </style>
 </head>
-
 <body>
-
 <main class="world" id="world">
-
-<svg
-  class="landscape"
-  id="landscape"
-  viewBox="0 0 1000 700"
-  preserveAspectRatio="none"
-  xmlns="http://www.w3.org/2000/svg"
-  aria-hidden="true"
->
-
+<svg class="landscape" id="landscape" viewBox="0 0 1000 700" preserveAspectRatio="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
 <defs>
-
-  <linearGradient id="sky" x1="0" y1="0" x2=".7" y2="1">
-    <stop offset="0" stop-color="#293d4e"/>
-    <stop offset=".42" stop-color="#586d7c"/>
-    <stop offset=".76" stop-color="#87969c"/>
-    <stop offset="1" stop-color="#aaa9a0"/>
-  </linearGradient>
-
-  <linearGradient id="sea" x1="0" y1="0" x2=".8" y2="1">
-    <stop offset="0" stop-color="#3c6074"/>
-    <stop offset=".35" stop-color="#23465d"/>
-    <stop offset=".72" stop-color="#112e45"/>
-    <stop offset="1" stop-color="#071b30"/>
-  </linearGradient>
-
-  <radialGradient id="sunDisc" cx="38%" cy="30%">
-    <stop offset="0" stop-color="#fff9e8"/>
-    <stop offset=".65" stop-color="#ffe4b3"/>
-    <stop offset="1" stop-color="#d8bf8f"/>
-  </radialGradient>
-
-  <radialGradient id="moonDisc" cx="35%" cy="30%">
-    <stop offset="0" stop-color="#ffffff"/>
-    <stop offset=".7" stop-color="#e1eff8"/>
-    <stop offset="1" stop-color="#abc5d8"/>
-  </radialGradient>
-
-  <radialGradient id="sunHalo">
-    <stop offset="0" stop-color="#fff0c7" stop-opacity=".38"/>
-    <stop offset=".22" stop-color="#ffe2a8" stop-opacity=".2"/>
-    <stop offset=".5" stop-color="#f2d8ac" stop-opacity=".07"/>
-    <stop offset="1" stop-color="#f2d8ac" stop-opacity="0"/>
-  </radialGradient>
-
-  <radialGradient id="moonHalo">
-    <stop offset="0" stop-color="#e9f7ff" stop-opacity=".4"/>
-    <stop offset=".25" stop-color="#b8dff4" stop-opacity=".21"/>
-    <stop offset=".55" stop-color="#8dbbd9" stop-opacity=".07"/>
-    <stop offset="1" stop-color="#8dbbd9" stop-opacity="0"/>
-  </radialGradient>
-
-  <filter
-    id="cloudBlur"
-    x="-50%"
-    y="-100%"
-    width="200%"
-    height="300%"
-  >
-    <feGaussianBlur stdDeviation="18"/>
-  </filter>
-
-  <clipPath id="seaClip">
-    <path
-      id="seaClipPath"
-      d="M0 144 L1000 556 L1000 700 L0 700 Z"
-    />
-  </clipPath>
-
+<linearGradient id="sky" x1="0" y1="0" x2=".7" y2="1"><stop offset="0" stop-color="#293d4e"/><stop offset=".42" stop-color="#586d7c"/><stop offset=".76" stop-color="#87969c"/><stop offset="1" stop-color="#aaa9a0"/></linearGradient>
+<linearGradient id="sea" x1="0" y1="0" x2=".8" y2="1"><stop offset="0" stop-color="#3c6074"/><stop offset=".35" stop-color="#23465d"/><stop offset=".72" stop-color="#112e45"/><stop offset="1" stop-color="#071b30"/></linearGradient>
+<radialGradient id="sunDisc" cx="38%" cy="30%"><stop offset="0" stop-color="#fff9e8"/><stop offset=".65" stop-color="#ffe4b3"/><stop offset="1" stop-color="#d8bf8f"/></radialGradient>
+<radialGradient id="moonDisc" cx="35%" cy="30%"><stop offset="0" stop-color="#ffffff"/><stop offset=".7" stop-color="#e1eff8"/><stop offset="1" stop-color="#abc5d8"/></radialGradient>
+<radialGradient id="sunHalo"><stop offset="0" stop-color="#fff0c7" stop-opacity=".38"/><stop offset=".22" stop-color="#ffe2a8" stop-opacity=".2"/><stop offset=".5" stop-color="#f2d8ac" stop-opacity=".07"/><stop offset="1" stop-color="#f2d8ac" stop-opacity="0"/></radialGradient>
+<radialGradient id="moonHalo"><stop offset="0" stop-color="#e9f7ff" stop-opacity=".4"/><stop offset=".25" stop-color="#b8dff4" stop-opacity=".21"/><stop offset=".55" stop-color="#8dbbd9" stop-opacity=".07"/><stop offset="1" stop-color="#8dbbd9" stop-opacity="0"/></radialGradient>
+<filter id="cloudBlur" x="-50%" y="-100%" width="200%" height="300%"><feGaussianBlur stdDeviation="18"/></filter>
+<clipPath id="seaClip"><path id="seaClipPath" d="M0 144 L1000 556 L1000 700 L0 700 Z"/></clipPath>
 </defs>
-
-<!-- 하늘 -->
-
-<rect
-  width="100%"
-  height="100%"
-  fill="url(#sky)"
-/>
-
-<!-- 구름 -->
-
-<g
-  class="cloud-float-a"
-  filter="url(#cloudBlur)"
-  opacity=".76"
->
-
-  <path
-    d="
-      M-150 100
-      Q40 -25 230 50
-      Q360 -20 520 65
-      Q680 0 850 65
-      Q990 0 1150 90
-      L1150 165
-      Q900 120 690 145
-      Q470 110 280 160
-      Q100 115 -150 170
-      Z
-    "
-    fill="#293e50"
-  />
-
-  <path
-    d="
-      M-130 235
-      Q70 160 190 205
-      Q300 155 420 215
-      Q530 165 665 225
-      Q800 165 1130 210
-      L1130 270
-      Q870 240 700 280
-      Q490 240 330 275
-      Q120 230 -130 290
-      Z
-    "
-    fill="#c2c9c7"
-    opacity=".46"
-  />
-
+<rect width="100%" height="100%" fill="url(#sky)"/>
+<g class="cloud-float-a" filter="url(#cloudBlur)" opacity=".76">
+<path d="M-150 100 Q40 -25 230 50 Q360 -20 520 65 Q680 0 850 65 Q990 0 1150 90 L1150 165 Q900 120 690 145 Q470 110 280 160 Q100 115 -150 170 Z" fill="#293e50"/>
+<path d="M-130 235 Q70 160 190 205 Q300 155 420 215 Q530 165 665 225 Q800 165 1130 210 L1130 270 Q870 240 700 280 Q490 240 330 275 Q120 230 -130 290 Z" fill="#c2c9c7" opacity=".46"/>
 </g>
-
-<g
-  class="cloud-float-b"
-  filter="url(#cloudBlur)"
-  opacity=".72"
->
-
-  <path
-    d="
-      M-130 25
-      Q110 -35 280 25
-      Q420 -25 600 25
-      Q790 -35 1130 40
-      L1130 105
-      Q810 60 610 100
-      Q400 65 205 105
-      Q20 70 -130 120
-      Z
-    "
-    fill="#263b4d"
-  />
-
-  <path
-    d="
-      M-120 310
-      Q60 265 200 290
-      Q340 250 485 305
-      Q620 260 765 310
-      Q900 270 1120 310
-      L1120 365
-      Q850 335 690 370
-      Q440 330 280 370
-      Q70 340 -120 380
-      Z
-    "
-    fill="#d0d0c8"
-    opacity=".28"
-  />
-
+<g class="cloud-float-b" filter="url(#cloudBlur)" opacity=".72">
+<path d="M-130 25 Q110 -35 280 25 Q420 -25 600 25 Q790 -35 1130 40 L1130 105 Q810 60 610 100 Q400 65 205 105 Q20 70 -130 120 Z" fill="#263b4d"/>
+<path d="M-120 310 Q60 265 200 290 Q340 250 485 305 Q620 260 765 310 Q900 270 1120 310 L1120 365 Q850 335 690 370 Q440 330 280 370 Q70 340 -120 380 Z" fill="#d0d0c8" opacity=".28"/>
 </g>
-
-<!-- 태양 -->
-
 <g id="sunArtwork">
-
-  <circle
-    id="sunAura"
-    class="sun-glow"
-    cx="753"
-    cy="177"
-    r="210"
-    fill="url(#sunHalo)"
-  />
-
-  <circle
-    id="sunDiscShape"
-    cx="753"
-    cy="177"
-    r="50"
-    fill="url(#sunDisc)"
-  />
-
+<circle id="sunAura" class="sun-glow" cx="753" cy="177" r="210" fill="url(#sunHalo)"/>
+<circle id="sunDiscShape" cx="753" cy="177" r="50" fill="url(#sunDisc)"/>
 </g>
-
-<!-- 태양 앞 구름 -->
-
-<g
-  class="cloud-float-b"
-  filter="url(#cloudBlur)"
-  opacity=".22"
->
-  <path
-    d="
-      M585 175
-      Q675 135 770 162
-      Q856 138 954 180
-      Q870 202 750 187
-      Q659 211 585 175
-      Z
-    "
-    fill="#758591"
-  />
+<g class="cloud-float-b" filter="url(#cloudBlur)" opacity=".22">
+<path d="M585 175 Q675 135 770 162 Q856 138 954 180 Q870 202 750 187 Q659 211 585 175 Z" fill="#758591"/>
 </g>
-
-<!-- 바다 -->
-
 <g clip-path="url(#seaClip)">
-
-  <rect
-    width="100%"
-    height="100%"
-    fill="url(#sea)"
-  />
-
-  <circle
-    id="moonAura"
-    class="moon-glow"
-    cx="232"
-    cy="540"
-    r="200"
-    fill="url(#moonHalo)"
-  />
-
-  <circle
-    id="moonDiscShape"
-    cx="232"
-    cy="540"
-    r="54"
-    fill="url(#moonDisc)"
-  />
-
+<rect width="100%" height="100%" fill="url(#sea)"/>
+<circle id="moonAura" class="moon-glow" cx="232" cy="540" r="200" fill="url(#moonHalo)"/>
+<circle id="moonDiscShape" cx="232" cy="540" r="54" fill="url(#moonDisc)"/>
 </g>
-
-<!-- 해적선 -->
-
 <g id="shipPosition" transform="translate(280 259)">
-
 <g id="shipAngle" transform="rotate(22.4)">
-
 <g id="shipScale" transform="scale(.83)">
-
 <g class="ship-sway">
-
-  <!-- 선미와 선수 -->
-
-  <path
-    d="
-      M-100 -30
-      L-92 -56
-      L-63 -56
-      L-54 -30
-      M76 -31
-      L121 -58
-    "
-    fill="none"
-    stroke="#101b28"
-    stroke-width="5"
-    stroke-linejoin="round"
-  />
-
-  <!-- 선미 갑판 -->
-
-  <path
-    d="
-      M-103 -38
-      L-98 -56
-      L-71 -56
-      L-67 -38
-      Z
-    "
-    fill="#111b29"
-  />
-
-  <!-- 선체 -->
-
-  <path
-    d="
-      M-108 -30
-      Q-87 -8 -51 -5
-      L56 -5
-      Q83 -8 99 -32
-      L82 -24
-      L-100 -24
-      Z
-    "
-    fill="#0d1926"
-    stroke="#050f1b"
-    stroke-width="3"
-  />
-
-  <!-- 선체 장식 -->
-
-  <path
-    d="M-87 -24 Q-10 -31 83 -24"
-    stroke="#40566a"
-    stroke-opacity=".55"
-    stroke-width="2"
-    fill="none"
-  />
-
-  <path
-    d="M-73 -9 L61 -9"
-    stroke="#435465"
-    stroke-opacity=".4"
-    stroke-width="2"
-  />
-
-  <!-- 돛대 -->
-
-  <g
-    stroke="#0c1623"
-    stroke-linecap="round"
-    fill="none"
-  >
-
-    <path
-      d="
-        M-27 -27 L-27 -185
-        M39 -28 L39 -141
-        M-78 -36 L-78 -100
-      "
-      stroke-width="5"
-    />
-
-    <path
-      d="
-        M-82 -156 L29 -156
-        M-77 -117 L24 -117
-        M8 -121 L75 -121
-        M10 -82 L76 -82
-      "
-      stroke-width="3"
-    />
-
-    <path
-      d="
-        M-27 -185 L-98 -34
-        M-27 -185 L89 -33
-        M39 -143 L100 -32
-        M-78 -100 L-103 -32
-      "
-      stroke-width="1.5"
-      opacity=".72"
-    />
-
-  </g>
-
-  <!-- 검은 돛 -->
-
-  <path
-    d="
-      M-79 -153
-      Q-28 -163 26 -153
-      L20 -120
-      Q-25 -128 -75 -120
-      Z
-    "
-    fill="#142230"
-    stroke="#091321"
-    stroke-width="2"
-  />
-
-  <path
-    d="
-      M-74 -114
-      Q-26 -123 22 -114
-      L18 -62
-      Q-27 -73 -68 -62
-      Z
-    "
-    fill="#101d2a"
-    stroke="#091321"
-    stroke-width="2"
-  />
-
-  <path
-    d="
-      M10 -118
-      Q43 -127 76 -118
-      L72 -84
-      Q42 -90 15 -84
-      Z
-    "
-    fill="#142230"
-    stroke="#091321"
-    stroke-width="2"
-  />
-
-  <path
-    d="
-      M14 -80
-      Q44 -88 72 -80
-      L65 -40
-      Q43 -45 19 -40
-      Z
-    "
-    fill="#101b28"
-    stroke="#091321"
-    stroke-width="2"
-  />
-
-  <path
-    d="
-      M-80 -96
-      Q-97 -71 -88 -45
-      L-76 -48
-      Z
-    "
-    fill="#172738"
-  />
-
-  <!-- 돛 주름 -->
-
-  <g
-    stroke="#637384"
-    stroke-opacity=".25"
-    stroke-width="1"
-    fill="none"
-  >
-    <path d="M-27 -157 L-26 -124"/>
-    <path d="M-27 -116 L-27 -68"/>
-    <path d="M42 -121 L43 -86"/>
-    <path d="M43 -82 L43 -43"/>
-  </g>
-
-  <!-- 해적 깃발 -->
-
-  <path
-    d="
-      M-27 -185
-      L15 -177
-      L-27 -169
-      Z
-    "
-    fill="#0a1522"
-    stroke="#0a1522"
-    stroke-width="2"
-  />
-
-  <!-- 해골 문양 -->
-
-  <g
-    fill="#b7c3ca"
-    transform="translate(-13 -179) scale(.42)"
-  >
-
-    <path
-      d="M-12 -8 L12 10 M12 -8 L-12 10"
-      fill="none"
-      stroke="#b7c3ca"
-      stroke-width="2.5"
-    />
-
-    <circle cx="0" cy="0" r="7"/>
-
-    <rect
-      x="-4"
-      y="3"
-      width="8"
-      height="7"
-    />
-
-    <circle cx="-2.5" cy="0" r="1.3" fill="#0a1522"/>
-    <circle cx="2.5" cy="0" r="1.3" fill="#0a1522"/>
-
-  </g>
-
-  <!-- 갑판 난간 -->
-
-  <g
-    stroke="#0b1723"
-    stroke-width="2"
-    fill="none"
-  >
-
-    <path d="M-93 -34 L80 -34"/>
-
-    <path
-      d="
-        M-78 -34 V-42
-        M-48 -34 V-42
-        M-17 -34 V-42
-        M15 -34 V-42
-        M47 -34 V-42
-        M77 -34 V-42
-      "
-    />
-
-  </g>
-
+<path d="M-100 -30 L-92 -56 L-63 -56 L-54 -30 M76 -31 L121 -58" fill="none" stroke="#101b28" stroke-width="5" stroke-linejoin="round"/>
+<path d="M-103 -38 L-98 -56 L-71 -56 L-67 -38 Z" fill="#111b29"/>
+<path d="M-108 -30 Q-87 -8 -51 -5 L56 -5 Q83 -8 99 -32 L82 -24 L-100 -24 Z" fill="#0d1926" stroke="#050f1b" stroke-width="3"/>
+<path d="M-87 -24 Q-10 -31 83 -24" stroke="#40566a" stroke-opacity=".55" stroke-width="2" fill="none"/>
+<path d="M-73 -9 L61 -9" stroke="#435465" stroke-opacity=".4" stroke-width="2"/>
+<g stroke="#0c1623" stroke-linecap="round" fill="none">
+<path d="M-27 -27 L-27 -185 M39 -28 L39 -141 M-78 -36 L-78 -100" stroke-width="5"/>
+<path d="M-82 -156 L29 -156 M-77 -117 L24 -117 M8 -121 L75 -121 M10 -82 L76 -82" stroke-width="3"/>
+<path d="M-27 -185 L-98 -34 M-27 -185 L89 -33 M39 -143 L100 -32 M-78 -100 L-103 -32" stroke-width="1.5" opacity=".72"/>
+</g>
+<path d="M-79 -153 Q-28 -163 26 -153 L20 -120 Q-25 -128 -75 -120 Z" fill="#142230" stroke="#091321" stroke-width="2"/>
+<path d="M-74 -114 Q-26 -123 22 -114 L18 -62 Q-27 -73 -68 -62 Z" fill="#101d2a" stroke="#091321" stroke-width="2"/>
+<path d="M10 -118 Q43 -127 76 -118 L72 -84 Q42 -90 15 -84 Z" fill="#142230" stroke="#091321" stroke-width="2"/>
+<path d="M14 -80 Q44 -88 72 -80 L65 -40 Q43 -45 19 -40 Z" fill="#101b28" stroke="#091321" stroke-width="2"/>
+<path d="M-80 -96 Q-97 -71 -88 -45 L-76 -48 Z" fill="#172738"/>
+<g stroke="#637384" stroke-opacity=".25" stroke-width="1" fill="none"><path d="M-27 -157 L-26 -124"/><path d="M-27 -116 L-27 -68"/><path d="M42 -121 L43 -86"/><path d="M43 -82 L43 -43"/></g>
+<path d="M-27 -185 L15 -177 L-27 -169 Z" fill="#0a1522" stroke="#0a1522" stroke-width="2"/>
+<g fill="#b7c3ca" transform="translate(-13 -179) scale(.42)">
+<path d="M-12 -8 L12 10 M12 -8 L-12 10" fill="none" stroke="#b7c3ca" stroke-width="2.5"/>
+<circle cx="0" cy="0" r="7"/><rect x="-4" y="3" width="8" height="7"/>
+<circle cx="-2.5" cy="0" r="1.3" fill="#0a1522"/><circle cx="2.5" cy="0" r="1.3" fill="#0a1522"/>
+</g>
+<g stroke="#0b1723" stroke-width="2" fill="none">
+<path d="M-93 -34 L80 -34"/>
+<path d="M-78 -34 V-42 M-48 -34 V-42 M-17 -34 V-42 M15 -34 V-42 M47 -34 V-42 M77 -34 V-42"/>
 </g>
 </g>
 </g>
 </g>
-
+</g>
 </svg>
 
-<h1 class="scene-title">
-  빛이 잠긴 바다
-</h1>
+<h1 class="scene-title">빛이 잠긴 바다</h1>
+<button class="celestial sun-button" id="sunButton" type="button" aria-label="차태경 프로필 보기"></button>
+<button class="celestial moon-button" id="moonButton" type="button" aria-label="강지한 프로필 보기"></button>
+<button class="ship-click" id="shipButton" type="button" aria-label="해적선 정보 보기"></button>
 
-<!-- 해 -->
+<div class="modal" id="modal" aria-hidden="true">
+<section class="profile" id="profile" role="dialog" aria-modal="true" aria-labelledby="profileHeading">
+<div class="profile-header">
+<h2 class="profile-heading" id="profileHeading"></h2>
+<button type="button" class="close-profile" id="closeProfile" aria-label="닫기">×</button>
+</div>
+<div class="profile-body">
+<div class="profile-decoration" aria-hidden="true"></div>
+<h3 class="profile-name" id="profileName"></h3>
+<p class="profile-description" id="profileDescription"></p>
+<div class="profile-accent" aria-hidden="true"></div>
 
-<button
-  class="celestial sun-button"
-  id="sunButton"
-  type="button"
-  aria-label="선장님 정보 보기"
-></button>
-
-<!-- 달 -->
-
-<button
-  class="celestial moon-button"
-  id="moonButton"
-  type="button"
-  aria-label="아귀인어 정보 보기"
-></button>
-
-<!-- 해적선 -->
-
-<button
-  class="ship-click"
-  id="shipButton"
-  type="button"
-  aria-label="해적선 정보 보기"
-></button>
-
-<!-- 설명창 -->
-
-<div
-  class="modal"
-  id="modal"
-  aria-hidden="true"
->
-
-  <section
-    class="profile"
-    id="profile"
-    role="dialog"
-    aria-modal="true"
-    aria-labelledby="profileHeading"
-  >
-
-    <div class="profile-header">
-
-      <h2
-        class="profile-heading"
-        id="profileHeading"
-      ></h2>
-
-      <button
-        type="button"
-        class="close-profile"
-        id="closeProfile"
-        aria-label="닫기"
-      >×</button>
-
-    </div>
-
-    <div class="profile-body">
-
-      <div
-        class="profile-decoration"
-        aria-hidden="true"
-      ></div>
-
-      <h3
-        class="profile-name"
-        id="profileName"
-      ></h3>
-
-      <p
-        class="profile-description"
-        id="profileDescription"
-      ></p>
-
-      <div
-        class="profile-accent"
-        aria-hidden="true"
-      ></div>
-
-      <!-- 해적선 전용 정보 -->
-
-      <div
-        class="ship-info"
-        id="shipInfo"
-        hidden
-      >
-
-        <section class="ship-section">
-
-          <h4 class="ship-section-title">
-            해적선 특징
-          </h4>
-
-          <div class="ship-info-row">
-            <span class="ship-info-label">선장</span>
-            <span class="ship-info-value">차태경</span>
-          </div>
-
-          <div class="ship-info-row">
-            <span class="ship-info-label">소속</span>
-            <span class="ship-info-value">
-              차태경이 이끄는 해적단
-            </span>
-          </div>
-
-          <p class="ship-section-text">
-            이곳에 해적선의 외형, 구조, 특징,
-            선원들의 생활 등에 관한 설명을 추가할 수 있습니다.
-          </p>
-
-        </section>
-
-        <section class="ship-section">
-
-          <h4 class="ship-section-title">
-            페르소나 고정 정보
-          </h4>
-
-          <p class="ship-section-text">
-            {{user}}는 이 해적선에 소속된 선원입니다.
-            선내에서 맡은 직책과 역할은 자유롭게 설정할 수 있습니다.
-          </p>
-
-        </section>
-
-      </div>
-
-    </div>
-
-  </section>
-
+<div id="characterInfo" hidden>
+<section class="profile-section">
+<h4 class="section-title">기본 정보</h4>
+<div class="info-grid" id="characterBasics"></div>
+</section>
+<section class="profile-section">
+<h4 class="section-title">성격 및 특징</h4>
+<p class="section-text" id="characterPersonality"></p>
+</section>
+<section class="thought-section">
+<h4 class="thought-title">USER에 대한 생각</h4>
+<p class="thought-text thought-placeholder" id="characterThought">이곳에 USER에 대한 생각을 작성할 예정입니다.</p>
+</section>
 </div>
 
+<div id="shipInfo" hidden>
+<section class="ship-box">
+<h4 class="section-title">해적선 특징</h4>
+<p class="ship-intro">차태경이 이끄는 대형 해적선. 남성 선원만 승선할 수 있으며, 선장과 선원들은 정해진 선상 규율에 따라 생활한다.</p>
+<div class="info-grid" style="margin-bottom:19px">
+<span class="info-label">선장</span><span class="info-value">차태경</span>
+<span class="info-label">승선</span><span class="info-value">남성만 승선 가능</span>
+<span class="info-label">선출</span><span class="info-value">선원 투표로 선장 선출</span>
+<span class="info-label">전리품</span><span class="info-value">직책별 몫에 따라 분배</span>
+</div>
+<h4 class="section-title">선상 규칙</h4>
+<ul class="rule-list">
+<li>선상에서의 싸움은 중죄로 취급한다.</li>
+<li>전리품을 몰래 숨기거나 착복하는 행위는 엄격히 금지한다.</li>
+</ul>
+</section>
+<section class="persona-box">
+<h4 class="section-title">페르소나 고정 설정</h4>
+<p class="persona-note">플레이 전 참고할 기본 설정</p>
+<p class="section-text">USER는 차태경이 이끄는 해적선에 승선한 선원입니다.
+
+선내에서 맡는 직책과 구체적인 역할은 자유롭게 설정할 수 있습니다.</p>
+</section>
+</div>
+</div>
+</section>
+</div>
 </main>
 
 <script>
 (() => {
-
-  const world = document.getElementById("world");
-  const scene = document.getElementById("landscape");
-  const seaClipPath = document.getElementById("seaClipPath");
-
-  const shipPosition = document.getElementById("shipPosition");
-  const shipAngle = document.getElementById("shipAngle");
-  const shipScale = document.getElementById("shipScale");
-
-  const sunButton = document.getElementById("sunButton");
-  const moonButton = document.getElementById("moonButton");
-  const shipButton = document.getElementById("shipButton");
-
-  const modal = document.getElementById("modal");
-  const profile = document.getElementById("profile");
-
-  const heading = document.getElementById("profileHeading");
-  const name = document.getElementById("profileName");
-  const description = document.getElementById("profileDescription");
-  const shipInfo = document.getElementById("shipInfo");
-
-  const closeButton = document.getElementById("closeProfile");
-
-  let lastFocus = null;
-
-  /* 풍경 배치 */
-
-  function layout() {
-
-    const w = world.clientWidth;
-    const h = world.clientHeight;
-
-    scene.setAttribute("viewBox", `0 0 ${w} ${h}`);
-
-    const y1 = h * .205;
-    const y2 = h * .795;
-    const dy = y2 - y1;
-
-    seaClipPath.setAttribute(
-      "d",
-      `M0 ${y1} L${w} ${y2} L${w} ${h} L0 ${h} Z`
-    );
-
-    /* 해와 달 */
-
-    const sunX = w * .75;
-    const sunY = h * .245;
-
-    const moonX = w * .23;
-    const moonY = h * .77;
-
-    const r = Math.max(
-      27,
-      Math.min(53, Math.min(w, h) * .075)
-    );
-
-    const moonR = r * 1.05;
-
-    function setCircle(id, x, y, radius) {
-      const element = document.getElementById(id);
-      element.setAttribute("cx", x);
-      element.setAttribute("cy", y);
-      element.setAttribute("r", radius);
-    }
-
-    setCircle("sunDiscShape", sunX, sunY, r);
-    setCircle("sunAura", sunX, sunY, r * 4.1);
-
-    setCircle("moonDiscShape", moonX, moonY, moonR);
-    setCircle("moonAura", moonX, moonY, moonR * 4);
-
-    world.style.setProperty("--sun-left", `${sunX - r}px`);
-    world.style.setProperty("--sun-top", `${sunY - r}px`);
-    world.style.setProperty("--sun-size", `${r * 2}px`);
-
-    world.style.setProperty("--moon-left", `${moonX - moonR}px`);
-    world.style.setProperty("--moon-top", `${moonY - moonR}px`);
-    world.style.setProperty("--moon-size", `${moonR * 2}px`);
-
-    /* ─────────────────────────
-       해적선 : 수평선에 붙이기
-    ───────────────────────── */
-
-    const sx = w * .29;
-
-    const horizonY = y1 + dy * .29;
-
-    const angle =
-      Math.atan2(dy, w) * 180 / Math.PI;
-
-    const angleRad = angle * Math.PI / 180;
-
-    const scale = Math.max(
-      .42,
-      Math.min(.88, Math.min(w / 850, h / 630))
-    );
-
-    /*
-      배의 선체 아래쪽은 SVG 좌표 y=-5.
-      수평선에 맞춰 기준점을 아래로 이동.
-    */
-
-    const shipY = horizonY + 5 * scale / Math.cos(angleRad);
-
-    shipPosition.setAttribute(
-      "transform",
-      `translate(${sx} ${shipY})`
-    );
-
-    shipAngle.setAttribute(
-      "transform",
-      `rotate(${angle})`
-    );
-
-    shipScale.setAttribute(
-      "transform",
-      `scale(${scale})`
-    );
-
-    /*
-      클릭 영역은 배와 동일한 회전·크기·기준점 사용.
-      배의 실제 SVG 범위 x=-108~121, y=-185~-5.
-    */
-
-    const hitLeft = -112;
-    const hitTop = -190;
-    const hitWidth = 240;
-    const hitHeight = 190;
-
-    const hitCenterX = hitLeft + hitWidth / 2;
-
-    /*
-      클릭 영역의 회전 중심을 SVG의 원점과
-      일치시키기 위해 transform-origin 조정.
-    */
-
-    const originX = -hitLeft;
-    const originY = -hitTop;
-
-    shipButton.style.left = `${sx + hitLeft * scale}px`;
-    shipButton.style.top = `${shipY + hitTop * scale}px`;
-    shipButton.style.width = `${hitWidth * scale}px`;
-    shipButton.style.height = `${hitHeight * scale}px`;
-
-    shipButton.style.transformOrigin =
-      `${originX * scale}px ${originY * scale}px`;
-
-    shipButton.style.transform = `rotate(${angle}deg)`;
-
-  }
-
-  /* 구름 */
-
-  const clouds = [
-    ...scene.querySelectorAll(".cloud-float-a, .cloud-float-b")
-  ];
-
-  function adaptClouds() {
-
-    const w = world.clientWidth;
-    const h = world.clientHeight;
-
-    const scaleX = w / 1000;
-    const scaleY = h / 700;
-
-    for (const element of clouds) {
-      element.style.transformBox = "view-box";
-      element.style.transformOrigin = "0 0";
-      element.style.scale = `${scaleX} ${scaleY}`;
-    }
-
-  }
-
-  function refresh() {
-    layout();
-    adaptClouds();
-  }
-
-  window.addEventListener("resize", refresh);
-  refresh();
-
-  /* 캐릭터 정보 */
-
-  const characters = {
-
-    sun: {
-      title: "선장님",
-      name: "차태경",
-      description: "태양의 힘을 잃어버린 해적선의 선장."
-    },
-
-    moon: {
-      title: "아귀인어",
-      name: "강지한",
-      description: "깊은 바닷속에서 달의 힘을 품게 된 인어."
-    },
-
-    ship: {
-      title: "해적선",
-      name: "해적선",
-      description: "끝없이 펼쳐진 바다를 항해하는 배."
-    }
-
-  };
-
-  /* 설명창 */
-
-  function openProfile(type) {
-
-    const character = characters[type];
-
-    lastFocus = document.activeElement;
-
-    heading.textContent = character.title;
-    name.textContent = character.name;
-    description.textContent = character.description;
-
-    profile.classList.remove(
-      "sun-profile",
-      "moon-profile",
-      "ship-profile"
-    );
-
-    profile.classList.add(`${type}-profile`);
-
-    shipInfo.hidden = type !== "ship";
-
-    modal.classList.add("open");
-    modal.setAttribute("aria-hidden", "false");
-
-    closeButton.focus();
-
-  }
-
-  function closeProfile() {
-
-    modal.classList.remove("open");
-    modal.setAttribute("aria-hidden", "true");
-
-    if (lastFocus) {
-      lastFocus.focus();
-    }
-
-  }
-
-  sunButton.addEventListener("click", () => {
-    openProfile("sun");
-  });
-
-  moonButton.addEventListener("click", () => {
-    openProfile("moon");
-  });
-
-  shipButton.addEventListener("click", () => {
-    openProfile("ship");
-  });
-
-  closeButton.addEventListener("click", closeProfile);
-
-  modal.addEventListener("click", event => {
-    if (event.target === modal) {
-      closeProfile();
-    }
-  });
-
-  document.addEventListener("keydown", event => {
-
-    if (!modal.classList.contains("open")) {
-      return;
-    }
-
-    if (event.key === "Escape") {
-      closeProfile();
-    }
-
-    if (event.key === "Tab") {
-      event.preventDefault();
-      closeButton.focus();
-    }
-
-  });
-
+const world=document.getElementById("world");
+const scene=document.getElementById("landscape");
+const seaClipPath=document.getElementById("seaClipPath");
+const shipPosition=document.getElementById("shipPosition");
+const shipAngle=document.getElementById("shipAngle");
+const shipScale=document.getElementById("shipScale");
+const sunButton=document.getElementById("sunButton");
+const moonButton=document.getElementById("moonButton");
+const shipButton=document.getElementById("shipButton");
+const modal=document.getElementById("modal");
+const profile=document.getElementById("profile");
+const heading=document.getElementById("profileHeading");
+const name=document.getElementById("profileName");
+const description=document.getElementById("profileDescription");
+const shipInfo=document.getElementById("shipInfo");
+const characterInfo=document.getElementById("characterInfo");
+const characterBasics=document.getElementById("characterBasics");
+const characterPersonality=document.getElementById("characterPersonality");
+const characterThought=document.getElementById("characterThought");
+const closeButton=document.getElementById("closeProfile");
+let lastFocus=null;
+
+function layout(){
+const w=world.clientWidth;
+const h=world.clientHeight;
+scene.setAttribute("viewBox",`0 0 ${w} ${h}`);
+const y1=h*.205;
+const y2=h*.795;
+const dy=y2-y1;
+seaClipPath.setAttribute("d",`M0 ${y1} L${w} ${y2} L${w} ${h} L0 ${h} Z`);
+
+const sunX=w*.75,sunY=h*.245;
+const moonX=w*.23,moonY=h*.77;
+const r=Math.max(27,Math.min(53,Math.min(w,h)*.075));
+const moonR=r*1.05;
+
+function setCircle(id,x,y,radius){
+const el=document.getElementById(id);
+el.setAttribute("cx",x);
+el.setAttribute("cy",y);
+el.setAttribute("r",radius);
+}
+setCircle("sunDiscShape",sunX,sunY,r);
+setCircle("sunAura",sunX,sunY,r*4.1);
+setCircle("moonDiscShape",moonX,moonY,moonR);
+setCircle("moonAura",moonX,moonY,moonR*4);
+world.style.setProperty("--sun-left",`${sunX-r}px`);
+world.style.setProperty("--sun-top",`${sunY-r}px`);
+world.style.setProperty("--sun-size",`${r*2}px`);
+world.style.setProperty("--moon-left",`${moonX-moonR}px`);
+world.style.setProperty("--moon-top",`${moonY-moonR}px`);
+world.style.setProperty("--moon-size",`${moonR*2}px`);
+
+const sx=w*.29;
+const horizonY=y1+dy*.29;
+const angle=Math.atan2(dy,w)*180/Math.PI;
+const scale=Math.max(.42,Math.min(.88,Math.min(w/850,h/630)));
+const shipY=horizonY+5*scale/Math.cos(angle*Math.PI/180);
+shipPosition.setAttribute("transform",`translate(${sx} ${shipY})`);
+shipAngle.setAttribute("transform",`rotate(${angle})`);
+shipScale.setAttribute("transform",`scale(${scale})`);
+
+const hitLeft=-112,hitTop=-190,hitWidth=240,hitHeight=190;
+shipButton.style.left=`${sx+hitLeft*scale}px`;
+shipButton.style.top=`${shipY+hitTop*scale}px`;
+shipButton.style.width=`${hitWidth*scale}px`;
+shipButton.style.height=`${hitHeight*scale}px`;
+shipButton.style.transformOrigin=`${-hitLeft*scale}px ${-hitTop*scale}px`;
+shipButton.style.transform=`rotate(${angle}deg)`;
+}
+
+const clouds=[...scene.querySelectorAll(".cloud-float-a,.cloud-float-b")];
+function adaptClouds(){
+const sx=world.clientWidth/1000;
+const sy=world.clientHeight/700;
+for(const el of clouds){
+el.style.transformBox="view-box";
+el.style.transformOrigin="0 0";
+el.style.scale=`${sx} ${sy}`;
+}
+}
+function refresh(){layout();adaptClouds()}
+window.addEventListener("resize",refresh);
+refresh();
+
+const characters={
+sun:{
+title:"선장님",
+name:"차태경",
+description:"태양의 힘을 잃어버린 해적선의 선장.",
+basics:[
+["신장","190cm"],
+["외형 나이","20대 중후반"],
+["머리","짙은 갈색"],
+["눈","금색 눈. 왼쪽 눈은 검은 안대로 가림"],
+["직책","해적선 선장"]
+],
+personality:"입이 거칠고 성질이 급하지만, 능청스럽고 책임감이 강하다.\n\n뛰어난 항해 실력과 전투 지휘 능력으로 선원들의 신뢰를 얻었다. 자기 사람과 물건은 끝까지 챙기는 성격이다.",
+thought:""
+},
+moon:{
+title:"아귀인어",
+name:"강지한",
+description:"깊은 바닷속에서 달의 힘을 품게 된 인어.",
+basics:[
+["신장","188cm"],
+["외형 나이","20대 중후반"],
+["머리","등을 덮는 남색 장발"],
+["눈","검은색"],
+["특징","머리 위에서 빛나는 유인돌기"]
+],
+personality:"말수가 적고 나른하다. 좀처럼 표정이 변하지 않으며, 무표정한 얼굴로 뻔뻔한 농담을 건넨다.\n\n오랫동안 바다에서 홀로 살아왔다.",
+thought:""
+},
+ship:{
+title:"해적선",
+name:"해적선",
+description:"끝없이 펼쳐진 바다를 항해하는 배."
+}
+};
+
+function fillBasics(items){
+characterBasics.replaceChildren();
+for(const [label,value] of items){
+const l=document.createElement("span");
+l.className="info-label";
+l.textContent=label;
+const v=document.createElement("span");
+v.className="info-value";
+v.textContent=value;
+characterBasics.append(l,v);
+}
+}
+
+function openProfile(type){
+const data=characters[type];
+lastFocus=document.activeElement;
+heading.textContent=data.title;
+name.textContent=data.name;
+description.textContent=data.description;
+profile.classList.remove("sun-profile","moon-profile","ship-profile");
+profile.classList.add(`${type}-profile`);
+const isShip=type==="ship";
+shipInfo.hidden=!isShip;
+characterInfo.hidden=isShip;
+if(!isShip){
+fillBasics(data.basics);
+characterPersonality.textContent=data.personality;
+characterThought.textContent=data.thought||"이곳에 USER에 대한 생각을 작성할 예정입니다.";
+characterThought.classList.toggle("thought-placeholder",!data.thought);
+}
+modal.classList.add("open");
+modal.setAttribute("aria-hidden","false");
+profile.querySelector(".profile-body").scrollTop=0;
+closeButton.focus();
+}
+function closeProfile(){
+modal.classList.remove("open");
+modal.setAttribute("aria-hidden","true");
+if(lastFocus)lastFocus.focus();
+}
+sunButton.addEventListener("click",()=>openProfile("sun"));
+moonButton.addEventListener("click",()=>openProfile("moon"));
+shipButton.addEventListener("click",()=>openProfile("ship"));
+closeButton.addEventListener("click",closeProfile);
+modal.addEventListener("click",e=>{if(e.target===modal)closeProfile()});
+document.addEventListener("keydown",e=>{
+if(!modal.classList.contains("open"))return;
+if(e.key==="Escape")closeProfile();
+if(e.key==="Tab"){e.preventDefault();closeButton.focus()}
+});
 })();
 </script>
-
 </body>
 </html>
